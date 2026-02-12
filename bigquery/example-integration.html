@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ConsentManager with BigQuery Logging</title>
+    
+    <!-- ConsentManager CSS -->
+    <link rel="stylesheet" href="https://storage.googleapis.com/consent-manager-cdn-tanapatj-jkt/v1.0.0/consent-manager.css">
+    
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            line-height: 1.6;
+        }
+        .info-box {
+            background: #f0f9ff;
+            border-left: 4px solid #0ea5e9;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 4px;
+        }
+        .log-viewer {
+            background: #1e1e1e;
+            color: #d4d4d4;
+            padding: 15px;
+            border-radius: 8px;
+            font-family: 'Monaco', 'Courier New', monospace;
+            font-size: 14px;
+            max-height: 300px;
+            overflow-y: auto;
+            margin: 20px 0;
+        }
+        .log-entry {
+            padding: 5px 0;
+            border-bottom: 1px solid #333;
+        }
+        .log-timestamp {
+            color: #858585;
+        }
+        .log-success {
+            color: #4ade80;
+        }
+        .log-error {
+            color: #f87171;
+        }
+        button {
+            background: #0ea5e9;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 5px;
+        }
+        button:hover {
+            background: #0284c7;
+        }
+    </style>
+</head>
+<body>
+    <h1>🍪 ConsentManager + BigQuery Integration Example</h1>
+    
+    <div class="info-box">
+        <strong>⚠️ Before using this example:</strong><br>
+        1. Deploy the Cloud Function (see <code>deployment-guide.md</code>)<br>
+        2. Replace <code>YOUR-CLOUD-FUNCTION-URL</code> below with your actual URL<br>
+        3. Create the BigQuery table using <code>schema.sql</code>
+    </div>
+    
+    <h2>What happens:</h2>
+    <ul>
+        <li>✅ User consent is logged to BigQuery in real-time</li>
+        <li>✅ IP address is hashed for privacy (GDPR compliant)</li>
+        <li>✅ Browser, device, page info captured</li>
+        <li>✅ Anonymous session tracking</li>
+    </ul>
+    
+    <h2>Test it:</h2>
+    <button onclick="ConsentManager.show()">Show Consent Banner</button>
+    <button onclick="ConsentManager.showPreferences()">Show Preferences</button>
+    <button onclick="ConsentManager.reset(true); location.reload()">Reset & Reload</button>
+    
+    <h2>Event Log:</h2>
+    <div class="log-viewer" id="logViewer">
+        <div class="log-entry">
+            <span class="log-timestamp">[Init]</span> 
+            Waiting for consent events...
+        </div>
+    </div>
+    
+    <!-- ConsentManager JS -->
+    <script src="https://storage.googleapis.com/consent-manager-cdn-tanapatj-jkt/v1.0.0/consent-manager.umd.js"></script>
+    
+    <script>
+        // ==========================================
+        // REPLACE THIS WITH YOUR CLOUD FUNCTION URL
+        // ==========================================
+        const CONSENT_LOG_URL = 'https://YOUR-CLOUD-FUNCTION-URL.a.run.app';
+        
+        // Log viewer
+        function addLog(message, type = 'info') {
+            const logViewer = document.getElementById('logViewer');
+            const entry = document.createElement('div');
+            entry.className = 'log-entry';
+            
+            const timestamp = new Date().toLocaleTimeString();
+            const typeClass = type === 'success' ? 'log-success' : type === 'error' ? 'log-error' : '';
+            
+            entry.innerHTML = `
+                <span class="log-timestamp">[${timestamp}]</span> 
+                <span class="${typeClass}">${message}</span>
+            `;
+            
+            logViewer.appendChild(entry);
+            logViewer.scrollTop = logViewer.scrollHeight;
+        }
+        
+        // Generate anonymous session ID
+        function getSessionId() {
+            let sessionId = sessionStorage.getItem('consent_session_id');
+            if (!sessionId) {
+                sessionId = 'sess_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+                sessionStorage.setItem('consent_session_id', sessionId);
+            }
+            return sessionId;
+        }
+        
+        // Get current user ID (if logged in)
+        function getCurrentUserId() {
+            // TODO: Implement your own logic
+            // Example: return window.currentUser?.id;
+            return null; // Anonymous by default
+        }
+        
+        // Log consent event to BigQuery via Cloud Function
+        async function logConsentEvent(eventType, eventData) {
+            addLog(`📤 Sending ${eventType} event to BigQuery...`, 'info');
+            
+            try {
+                const payload = {
+                    event_type: eventType,
+                    cookie: eventData.cookie,
+                    acceptType: eventData.cookie?.categories?.length === 3 ? 'all' : 
+                               eventData.cookie?.categories?.length === 1 ? 'necessary' : 'custom',
+                    rejectedCategories: [],
+                    changedCategories: eventData.changedCategories || [],
+                    rejectedServices: eventData.rejectedServices || {},
+                    
+                    // User info
+                    sessionId: getSessionId(),
+                    userId: getCurrentUserId(),
+                    
+                    // Page context
+                    pageUrl: window.location.href,
+                    pageTitle: document.title,
+                    referrer: document.referrer,
+                    language: navigator.language,
+                    
+                    // Metadata
+                    version: '1.0.0',
+                    
+                    // Privacy: Set to true only if you have legal basis to log raw IP
+                    logIP: false  // Hashed IP is always logged
+                };
+                
+                addLog(`📊 Payload: ${JSON.stringify({
+                    event_type: payload.event_type,
+                    acceptType: payload.acceptType,
+                    sessionId: payload.sessionId.substr(0, 15) + '...'
+                })}`, 'info');
+                
+                const response = await fetch(CONSENT_LOG_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                }
+                
+                const result = await response.json();
+                addLog(`✅ Logged to BigQuery successfully! Event ID: ${result.event_id}`, 'success');
+                
+            } catch (error) {
+                addLog(`❌ Failed to log: ${error.message}`, 'error');
+                console.error('Consent logging error:', error);
+                // Don't block user experience if logging fails
+            }
+        }
+        
+        // Initialize ConsentManager with BigQuery logging
+        addLog('🚀 Initializing ConsentManager...', 'info');
+        
+        ConsentManager.run({
+            categories: {
+                necessary: { readOnly: true, enabled: true },
+                analytics: {},
+                marketing: {}
+            },
+            
+            language: {
+                default: 'en',
+                translations: {
+                    en: {
+                        consentModal: {
+                            title: 'We use cookies',
+                            description: 'We use cookies to improve your experience. Your consent choices will be logged anonymously for analytics.',
+                            acceptAllBtn: 'Accept all',
+                            acceptNecessaryBtn: 'Reject all',
+                            showPreferencesBtn: 'Manage preferences'
+                        },
+                        preferencesModal: {
+                            title: 'Cookie Preferences',
+                            acceptAllBtn: 'Accept all',
+                            acceptNecessaryBtn: 'Reject all',
+                            savePreferencesBtn: 'Save preferences',
+                            closeIconLabel: 'Close',
+                            sections: [
+                                {
+                                    title: 'Strictly Necessary Cookies',
+                                    description: 'Essential for the website to function.',
+                                    linkedCategory: 'necessary'
+                                },
+                                {
+                                    title: 'Analytics Cookies',
+                                    description: 'Help us understand how visitors use our website.',
+                                    linkedCategory: 'analytics'
+                                },
+                                {
+                                    title: 'Marketing Cookies',
+                                    description: 'Used for targeted advertising.',
+                                    linkedCategory: 'marketing'
+                                }
+                            ]
+                        }
+                    }
+                }
+            },
+            
+            // Log first-time consent
+            onFirstConsent: function(event) {
+                addLog('🎉 First consent event fired', 'info');
+                logConsentEvent('first_consent', event);
+            },
+            
+            // Log all consent events
+            onConsent: function(event) {
+                addLog('✅ Consent event fired', 'info');
+                logConsentEvent('consent', event);
+            },
+            
+            // Log preference changes
+            onChange: function(event) {
+                addLog('🔄 Preference change event fired', 'info');
+                logConsentEvent('change', event);
+            }
+        });
+        
+        addLog('✓ ConsentManager initialized', 'success');
+        addLog(`🔑 Session ID: ${getSessionId()}`, 'info');
+    </script>
+</body>
+</html>
