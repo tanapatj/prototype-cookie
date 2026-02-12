@@ -408,6 +408,35 @@
                 </div>
             </div>
         </div>
+        
+        <div class="demo-card" style="background: linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%); border-left: 4px solid #28a745;">
+            <h2>🔥 BigQuery Logging ACTIVE</h2>
+            <p><strong>This demo now logs consent events to BigQuery in real-time!</strong></p>
+            <div class="info-grid">
+                <div class="info-item" style="background: rgba(255,255,255,0.7);">
+                    <strong>Dataset:</strong>
+                    conicle-ai-dev.consent_analytics
+                </div>
+                <div class="info-item" style="background: rgba(255,255,255,0.7);">
+                    <strong>Table:</strong>
+                    consent_events
+                </div>
+                <div class="info-item" style="background: rgba(255,255,255,0.7);">
+                    <strong>Cloud Function:</strong>
+                    logConsent (asia-southeast1)
+                </div>
+                <div class="info-item" style="background: rgba(255,255,255,0.7);">
+                    <strong>Privacy:</strong>
+                    IP hashed, anonymous session
+                </div>
+            </div>
+            <p style="margin-top: 1rem;">
+                <strong>Try it:</strong> Accept/reject cookies and check the event log below to see BigQuery confirmations! ✅
+            </p>
+            <p style="margin-top: 0.5rem; font-size: 0.9rem;">
+                💡 <em>Query your data:</em> See <code>bigquery/example-queries.sql</code> in the GitHub repo for analytics queries.
+            </p>
+        </div>
     </div>
     
     <footer>
@@ -433,6 +462,73 @@
         document.getElementById('marketing-result').innerHTML = '✅ Script is running! (Simulated FB Pixel loaded)';
         document.getElementById('marketing-status').className = 'tracking-demo allowed';
         logEvent('Marketing Script', 'Executed - Facebook Pixel would track now');
+    </script>
+    
+    <!-- BigQuery Logging Setup -->
+    <script>
+        // ==========================================
+        // BIGQUERY LOGGING - NOW ACTIVE!
+        // ==========================================
+        const BIGQUERY_LOG_URL = 'https://logconsent-pxoxh5sfqa-as.a.run.app';
+        
+        // Generate anonymous session ID
+        function getSessionId() {
+            let sessionId = sessionStorage.getItem('consent_session_id');
+            if (!sessionId) {
+                sessionId = 'sess_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+                sessionStorage.setItem('consent_session_id', sessionId);
+            }
+            return sessionId;
+        }
+        
+        // Log to BigQuery via Cloud Function
+        async function logToBigQuery(eventType, eventData) {
+            try {
+                const payload = {
+                    event_type: eventType,
+                    cookie: eventData.cookie,
+                    acceptType: eventData.cookie?.categories?.length === 3 ? 'all' : 
+                               eventData.cookie?.categories?.length === 1 ? 'necessary' : 'custom',
+                    rejectedCategories: [],
+                    changedCategories: eventData.changedCategories || [],
+                    rejectedServices: eventData.rejectedServices || {},
+                    
+                    // User info (anonymous)
+                    sessionId: getSessionId(),
+                    userId: null,  // Anonymous
+                    
+                    // Page context
+                    pageUrl: window.location.href,
+                    pageTitle: document.title,
+                    referrer: document.referrer,
+                    language: navigator.language,
+                    
+                    // Metadata
+                    version: '1.0.0',
+                    logIP: false  // Privacy-first: only hashed IP is logged
+                };
+                
+                const response = await fetch(BIGQUERY_LOG_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                
+                if (response.ok) {
+                    const result = await response.json();
+                    console.log('✅ Logged to BigQuery:', result.event_id);
+                    logEvent('BigQuery', `✅ Event logged: ${eventType} (${result.event_id.substr(0, 8)}...)`);
+                } else {
+                    console.warn('⚠️ BigQuery log failed:', response.status);
+                }
+            } catch (error) {
+                console.warn('⚠️ BigQuery logging error:', error.message);
+                // Don't block user experience
+            }
+        }
+        
+        console.log('🔥 BigQuery logging is ACTIVE!');
+        console.log('📊 Session ID:', getSessionId());
     </script>
     
     <!-- Initialize ConsentManager -->
@@ -523,17 +619,23 @@
             }
         });
         
-        // Event listeners
+        // Event listeners (with BigQuery logging)
         window.addEventListener('cm:onConsent', function({detail}) {
             logEvent('cm:onConsent', 'User gave consent: ' + detail.cookie.categories.join(', '));
             refreshStatus();
             checkTrackingScripts();
+            
+            // Log to BigQuery
+            logToBigQuery('consent', detail);
         });
         
         window.addEventListener('cm:onChange', function({detail}) {
             logEvent('cm:onChange', 'User changed preferences: ' + detail.changedCategories.join(', '));
             refreshStatus();
             checkTrackingScripts();
+            
+            // Log to BigQuery
+            logToBigQuery('change', detail);
         });
         
         window.addEventListener('cm:onModalShow', function() {
