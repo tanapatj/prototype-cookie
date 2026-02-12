@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ConsentManager Test - Hosted on GCP</title>
+    
+    <!-- Load CSS from YOUR GCP CDN (Jakarta - asia-southeast3) -->
+    <link rel="stylesheet" href="https://storage.googleapis.com/consent-manager-cdn-tanapatj-jkt/v1.0.0/consent-manager.css">
+    
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            line-height: 1.6;
+        }
+        h1 { color: #2c3e50; }
+        .success { 
+            background: #d4edda; 
+            border: 1px solid #c3e6cb; 
+            color: #155724; 
+            padding: 15px; 
+            border-radius: 5px;
+            margin: 20px 0;
+        }
+        button {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 5px;
+        }
+        button:hover { background: #0056b3; }
+        .info {
+            background: #e7f3ff;
+            border: 1px solid #b3d9ff;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 20px 0;
+        }
+        pre {
+            background: #f4f4f4;
+            padding: 15px;
+            border-radius: 5px;
+            overflow-x: auto;
+        }
+    </style>
+</head>
+<body>
+    <h1>🎉 ConsentManager - Hosted on GCP</h1>
+    
+    <div class="success">
+        <strong>✅ SUCCESS!</strong><br>
+        This page is loading the ConsentManager library from YOUR GCP Cloud Storage CDN:<br>
+        <code>gs://consent-manager-cdn-tanapatj-jkt</code> (Jakarta - asia-southeast3)
+    </div>
+
+    <div class="info">
+        <strong>ℹ️ What You're Seeing:</strong><br>
+        When this page loads, a cookie consent banner should appear. This is proof that:
+        <ul>
+            <li>Your library is successfully hosted on GCP ✅</li>
+            <li>It's publicly accessible via CDN ✅</li>
+            <li>CORS is properly configured ✅</li>
+            <li>The white-label rebranding worked ✅</li>
+        </ul>
+    </div>
+
+    <h2>Test Buttons</h2>
+    <button onclick="ConsentManager.show(true)">Show Consent Modal</button>
+    <button onclick="ConsentManager.showPreferences()">Show Preferences</button>
+    <button onclick="ConsentManager.reset(true); location.reload();">Reset & Reload</button>
+
+    <h2>Your Consent Status</h2>
+    <div id="status"></div>
+
+    <h2>CDN URLs</h2>
+    <pre>
+JavaScript (UMD):
+https://storage.googleapis.com/consent-manager-cdn-tanapatj-jkt/v1.0.0/consent-manager.umd.js
+
+JavaScript (ESM):
+https://storage.googleapis.com/consent-manager-cdn-tanapatj-jkt/v1.0.0/consent-manager.esm.js
+
+CSS:
+https://storage.googleapis.com/consent-manager-cdn-tanapatj-jkt/v1.0.0/consent-manager.css
+    </pre>
+
+    <!-- Load Library from YOUR GCP CDN (Jakarta - asia-southeast3) -->
+    <script src="https://storage.googleapis.com/consent-manager-cdn-tanapatj-jkt/v1.0.0/consent-manager.umd.js"></script>
+    
+    <!-- Initialize ConsentManager -->
+    <script>
+        ConsentManager.run({
+            categories: {
+                necessary: {
+                    readOnly: true,
+                    enabled: true
+                },
+                analytics: {},
+                marketing: {}
+            },
+            
+            onConsent: function() {
+                updateStatus();
+            },
+            
+            onChange: function() {
+                updateStatus();
+            },
+            
+            language: {
+                default: 'en',
+                translations: {
+                    en: {
+                        consentModal: {
+                            title: '🍪 We use cookies',
+                            description: 'This is a test of the ConsentManager library hosted on GCP. Choose which cookies to accept.',
+                            acceptAllBtn: 'Accept all',
+                            acceptNecessaryBtn: 'Reject all',
+                            showPreferencesBtn: 'Manage preferences',
+                            footer: '<a href="https://github.com/tanapatj/prototype-cookie">View on GitHub</a>'
+                        },
+                        preferencesModal: {
+                            title: 'Cookie Preferences',
+                            acceptAllBtn: 'Accept all',
+                            acceptNecessaryBtn: 'Reject all',
+                            savePreferencesBtn: 'Save preferences',
+                            closeIconLabel: 'Close',
+                            sections: [
+                                {
+                                    title: '📋 Cookie Usage',
+                                    description: 'We use cookies to improve your experience and analyze traffic.'
+                                },
+                                {
+                                    title: '✅ Strictly Necessary',
+                                    description: 'Essential cookies required for the website to function.',
+                                    linkedCategory: 'necessary'
+                                },
+                                {
+                                    title: '📊 Analytics',
+                                    description: 'Help us understand how visitors interact with our website.',
+                                    linkedCategory: 'analytics'
+                                },
+                                {
+                                    title: '🎯 Marketing',
+                                    description: 'Used to deliver personalized advertisements.',
+                                    linkedCategory: 'marketing'
+                                }
+                            ]
+                        }
+                    }
+                }
+            }
+        });
+        
+        function updateStatus() {
+            const prefs = ConsentManager.getUserPreferences();
+            const statusDiv = document.getElementById('status');
+            
+            statusDiv.innerHTML = `
+                <pre style="background: #f8f9fa; padding: 15px; border-radius: 5px;">
+<strong>Accept Type:</strong> ${prefs.acceptType}
+
+<strong>Accepted Categories:</strong> ${prefs.acceptedCategories.join(', ') || 'None'}
+
+<strong>Rejected Categories:</strong> ${prefs.rejectedCategories.join(', ') || 'None'}
+
+<strong>Cookie ID:</strong> ${ConsentManager.getCookie('consentId') || 'Not set yet'}
+
+<strong>Valid Consent:</strong> ${ConsentManager.validConsent() ? 'Yes ✅' : 'No ❌'}
+                </pre>
+            `;
+        }
+        
+        // Update status on page load
+        setTimeout(updateStatus, 100);
+    </script>
+</body>
+</html>

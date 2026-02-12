@@ -1,0 +1,659 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ConsentManager - Live Demo | Conicle AI</title>
+    
+    <!-- Consent Manager CSS -->
+    <link rel="stylesheet" href="https://storage.googleapis.com/consent-manager-cdn-tanapatj-jkt/v1.0.0/consent-manager.css">
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            line-height: 1.6;
+            color: #2c3e50;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        
+        header {
+            text-align: center;
+            color: white;
+            padding: 3rem 0;
+        }
+        
+        h1 {
+            font-size: 3rem;
+            margin-bottom: 0.5rem;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+        }
+        
+        .subtitle {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            margin-bottom: 2rem;
+        }
+        
+        .demo-card {
+            background: white;
+            border-radius: 16px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+        }
+        
+        .demo-card h2 {
+            color: #667eea;
+            margin-bottom: 1rem;
+            font-size: 1.8rem;
+        }
+        
+        .demo-card h3 {
+            color: #764ba2;
+            margin-top: 1.5rem;
+            margin-bottom: 0.5rem;
+            font-size: 1.3rem;
+        }
+        
+        .button-group {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            margin: 1rem 0;
+        }
+        
+        button {
+            padding: 0.8rem 1.5rem;
+            font-size: 1rem;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 600;
+        }
+        
+        .btn-primary {
+            background: #667eea;
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background: #5568d3;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+        }
+        
+        .btn-secondary {
+            background: #764ba2;
+            color: white;
+        }
+        
+        .btn-secondary:hover {
+            background: #63408a;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(118, 75, 162, 0.4);
+        }
+        
+        .btn-outline {
+            background: white;
+            color: #667eea;
+            border: 2px solid #667eea;
+        }
+        
+        .btn-outline:hover {
+            background: #667eea;
+            color: white;
+        }
+        
+        .status-box {
+            background: #f8f9fa;
+            border-left: 4px solid #667eea;
+            padding: 1rem;
+            margin: 1rem 0;
+            border-radius: 4px;
+            font-family: 'Monaco', 'Courier New', monospace;
+            font-size: 0.9rem;
+        }
+        
+        .status-box.success {
+            border-left-color: #28a745;
+            background: #d4edda;
+        }
+        
+        .status-box.error {
+            border-left-color: #dc3545;
+            background: #f8d7da;
+        }
+        
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1rem;
+            margin: 1.5rem 0;
+        }
+        
+        .info-item {
+            background: #f8f9fa;
+            padding: 1rem;
+            border-radius: 8px;
+            border-left: 3px solid #667eea;
+        }
+        
+        .info-item strong {
+            color: #764ba2;
+            display: block;
+            margin-bottom: 0.3rem;
+        }
+        
+        code {
+            background: #f8f9fa;
+            padding: 0.2rem 0.5rem;
+            border-radius: 4px;
+            font-family: 'Monaco', 'Courier New', monospace;
+            font-size: 0.85rem;
+            color: #d63384;
+        }
+        
+        .event-log {
+            background: #1e1e1e;
+            color: #d4d4d4;
+            padding: 1rem;
+            border-radius: 8px;
+            font-family: 'Monaco', 'Courier New', monospace;
+            font-size: 0.85rem;
+            max-height: 300px;
+            overflow-y: auto;
+            margin: 1rem 0;
+        }
+        
+        .event-log div {
+            padding: 0.3rem 0;
+            border-bottom: 1px solid #333;
+        }
+        
+        .event-log .timestamp {
+            color: #858585;
+            margin-right: 0.5rem;
+        }
+        
+        .event-log .event-name {
+            color: #4ec9b0;
+            font-weight: bold;
+        }
+        
+        .event-log .event-data {
+            color: #ce9178;
+        }
+        
+        .tracking-demo {
+            background: #fff3cd;
+            border: 2px dashed #ffc107;
+            padding: 1rem;
+            border-radius: 8px;
+            margin: 1rem 0;
+        }
+        
+        .tracking-demo.blocked {
+            background: #f8d7da;
+            border-color: #dc3545;
+        }
+        
+        .tracking-demo.allowed {
+            background: #d4edda;
+            border-color: #28a745;
+        }
+        
+        footer {
+            text-align: center;
+            color: white;
+            padding: 2rem 0;
+            margin-top: 2rem;
+        }
+        
+        footer a {
+            color: white;
+            text-decoration: underline;
+        }
+        
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2rem;
+            }
+            
+            .button-group {
+                flex-direction: column;
+            }
+            
+            button {
+                width: 100%;
+            }
+        }
+        
+        .badge {
+            display: inline-block;
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-left: 0.5rem;
+        }
+        
+        .badge.success {
+            background: #28a745;
+            color: white;
+        }
+        
+        .badge.danger {
+            background: #dc3545;
+            color: white;
+        }
+        
+        .badge.warning {
+            background: #ffc107;
+            color: #333;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🍪 ConsentManager</h1>
+            <p class="subtitle">Live Demo - GDPR Compliant Cookie Consent</p>
+            <p>Hosted on GCP Cloud Storage (Bangkok 🇹🇭) | Built by Conicle AI</p>
+        </header>
+        
+        <div class="demo-card">
+            <h2>📊 Current Consent Status</h2>
+            <div id="consent-status" class="status-box">
+                Loading...
+            </div>
+            
+            <div class="info-grid">
+                <div class="info-item">
+                    <strong>Cookie Name:</strong>
+                    <span id="cookie-name">-</span>
+                </div>
+                <div class="info-item">
+                    <strong>Consent Valid:</strong>
+                    <span id="consent-valid">-</span>
+                </div>
+                <div class="info-item">
+                    <strong>Accept Type:</strong>
+                    <span id="accept-type">-</span>
+                </div>
+                <div class="info-item">
+                    <strong>Last Updated:</strong>
+                    <span id="last-updated">-</span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="demo-card">
+            <h2>🎮 Interactive Controls</h2>
+            <p>Test the consent manager functionality:</p>
+            
+            <h3>Modal Controls</h3>
+            <div class="button-group">
+                <button class="btn-primary" onclick="showConsentModal()">
+                    Show Consent Banner
+                </button>
+                <button class="btn-secondary" onclick="showPreferencesModal()">
+                    Show Preferences
+                </button>
+                <button class="btn-outline" onclick="hideModals()">
+                    Hide Modals
+                </button>
+            </div>
+            
+            <h3>Accept/Reject Controls</h3>
+            <div class="button-group">
+                <button class="btn-primary" onclick="acceptAll()">
+                    ✓ Accept All
+                </button>
+                <button class="btn-secondary" onclick="acceptAnalyticsOnly()">
+                    📊 Accept Analytics Only
+                </button>
+                <button class="btn-outline" onclick="rejectAll()">
+                    ✗ Reject All (Necessary Only)
+                </button>
+            </div>
+            
+            <h3>Testing Controls</h3>
+            <div class="button-group">
+                <button class="btn-outline" onclick="resetConsent()">
+                    🔄 Reset & Clear Cookie
+                </button>
+                <button class="btn-outline" onclick="refreshStatus()">
+                    🔍 Refresh Status
+                </button>
+            </div>
+        </div>
+        
+        <div class="demo-card">
+            <h2>🔒 Tracking Script Demo</h2>
+            <p>These simulate Google Analytics and Facebook Pixel - they only run if you accept the corresponding category:</p>
+            
+            <div class="tracking-demo" id="analytics-status">
+                <strong>📊 Analytics (Google Analytics)</strong>
+                <div id="analytics-result">Waiting for consent...</div>
+            </div>
+            
+            <div class="tracking-demo" id="marketing-status">
+                <strong>📢 Marketing (Facebook Pixel)</strong>
+                <div id="marketing-result">Waiting for consent...</div>
+            </div>
+            
+            <p style="margin-top: 1rem;">
+                <strong>How it works:</strong> These scripts have <code>data-category="analytics"</code> and <code>type="text/plain"</code>. 
+                ConsentManager automatically converts them to <code>type="text/javascript"</code> when you accept the category.
+            </p>
+        </div>
+        
+        <div class="demo-card">
+            <h2>📡 Event Log</h2>
+            <p>Watch consent events in real-time:</p>
+            <div class="event-log" id="event-log">
+                <div><span class="timestamp">[Init]</span> <span class="event-name">Event logger started</span></div>
+            </div>
+            <button class="btn-outline" onclick="clearLog()">Clear Log</button>
+        </div>
+        
+        <div class="demo-card">
+            <h2>📚 API Reference</h2>
+            <p>Try these commands in the browser console:</p>
+            <div class="status-box">
+                <div><code>ConsentManager.getUserPreferences()</code> - Get current preferences</div>
+                <div><code>ConsentManager.acceptedCategory('analytics')</code> - Check if category accepted</div>
+                <div><code>ConsentManager.getCookie()</code> - Get cookie data</div>
+                <div><code>ConsentManager.validConsent()</code> - Check if consent is valid</div>
+                <div><code>ConsentManager.reset(true)</code> - Reset everything</div>
+            </div>
+        </div>
+        
+        <div class="demo-card">
+            <h2>🚀 Integration Info</h2>
+            <div class="info-grid">
+                <div class="info-item">
+                    <strong>CDN JavaScript:</strong>
+                    <code style="word-break: break-all;">
+                        https://storage.googleapis.com/consent-manager-cdn-tanapatj-jkt/v1.0.0/consent-manager.umd.js
+                    </code>
+                </div>
+                <div class="info-item">
+                    <strong>CDN CSS:</strong>
+                    <code style="word-break: break-all;">
+                        https://storage.googleapis.com/consent-manager-cdn-tanapatj-jkt/v1.0.0/consent-manager.css
+                    </code>
+                </div>
+                <div class="info-item">
+                    <strong>Region:</strong>
+                    Asia-Southeast3 (Bangkok 🇹🇭)
+                </div>
+                <div class="info-item">
+                    <strong>Version:</strong>
+                    1.0.0
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <footer>
+        <p>Built with ❤️ by Conicle AI Data Engineering Team</p>
+        <p><a href="https://github.com/tanapatj/prototype-cookie" target="_blank">View on GitHub</a></p>
+    </footer>
+    
+    <!-- Consent Manager JS -->
+    <script src="https://storage.googleapis.com/consent-manager-cdn-tanapatj-jkt/v1.0.0/consent-manager.umd.js"></script>
+    
+    <!-- Demo tracking scripts (blocked until consent) -->
+    <script data-category="analytics" type="text/plain">
+        // Simulated Google Analytics
+        console.log('🎯 Analytics script executed!');
+        document.getElementById('analytics-result').innerHTML = '✅ Script is running! (Simulated GA pageview sent)';
+        document.getElementById('analytics-status').className = 'tracking-demo allowed';
+        logEvent('Analytics Script', 'Executed - Google Analytics would track now');
+    </script>
+    
+    <script data-category="marketing" type="text/plain">
+        // Simulated Facebook Pixel
+        console.log('🎯 Marketing script executed!');
+        document.getElementById('marketing-result').innerHTML = '✅ Script is running! (Simulated FB Pixel loaded)';
+        document.getElementById('marketing-status').className = 'tracking-demo allowed';
+        logEvent('Marketing Script', 'Executed - Facebook Pixel would track now');
+    </script>
+    
+    <!-- Initialize ConsentManager -->
+    <script>
+        ConsentManager.run({
+            categories: {
+                necessary: {
+                    readOnly: true,
+                    enabled: true
+                },
+                analytics: {},
+                marketing: {}
+            },
+            
+            language: {
+                default: 'en',
+                translations: {
+                    en: {
+                        consentModal: {
+                            title: '🍪 Cookie Consent Demo',
+                            description: 'This is a live demo of ConsentManager. We use cookies to demonstrate GDPR-compliant consent management. Try accepting/rejecting different categories and watch how tracking scripts behave!',
+                            acceptAllBtn: 'Accept all',
+                            acceptNecessaryBtn: 'Reject all',
+                            showPreferencesBtn: 'Manage preferences'
+                        },
+                        preferencesModal: {
+                            title: 'Cookie Preferences',
+                            acceptAllBtn: 'Accept all',
+                            acceptNecessaryBtn: 'Reject all',
+                            savePreferencesBtn: 'Save preferences',
+                            closeIconLabel: 'Close',
+                            sections: [
+                                {
+                                    title: 'Cookie Usage',
+                                    description: 'This demo shows how to block tracking scripts until user consent. Real implementation would include Google Analytics, Facebook Pixel, etc.'
+                                },
+                                {
+                                    title: 'Strictly Necessary Cookies',
+                                    description: 'These cookies are essential. They store your consent preferences.',
+                                    linkedCategory: 'necessary'
+                                },
+                                {
+                                    title: 'Analytics Cookies',
+                                    description: 'Help us understand visitor behavior (simulated Google Analytics in this demo).',
+                                    linkedCategory: 'analytics',
+                                    cookieTable: {
+                                        headers: {
+                                            name: 'Cookie',
+                                            domain: 'Domain',
+                                            expiration: 'Expiration',
+                                            description: 'Description'
+                                        },
+                                        body: [
+                                            {
+                                                name: '_ga',
+                                                domain: 'conicle.ai',
+                                                expiration: '2 years',
+                                                description: 'Google Analytics tracking cookie'
+                                            }
+                                        ]
+                                    }
+                                },
+                                {
+                                    title: 'Marketing Cookies',
+                                    description: 'Used for targeted advertising (simulated Facebook Pixel in this demo).',
+                                    linkedCategory: 'marketing',
+                                    cookieTable: {
+                                        headers: {
+                                            name: 'Cookie',
+                                            domain: 'Domain',
+                                            expiration: 'Expiration',
+                                            description: 'Description'
+                                        },
+                                        body: [
+                                            {
+                                                name: '_fbp',
+                                                domain: 'conicle.ai',
+                                                expiration: '90 days',
+                                                description: 'Facebook Pixel tracking cookie'
+                                            }
+                                        ]
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            }
+        });
+        
+        // Event listeners
+        window.addEventListener('cm:onConsent', function({detail}) {
+            logEvent('cm:onConsent', 'User gave consent: ' + detail.cookie.categories.join(', '));
+            refreshStatus();
+            checkTrackingScripts();
+        });
+        
+        window.addEventListener('cm:onChange', function({detail}) {
+            logEvent('cm:onChange', 'User changed preferences: ' + detail.changedCategories.join(', '));
+            refreshStatus();
+            checkTrackingScripts();
+        });
+        
+        window.addEventListener('cm:onModalShow', function() {
+            logEvent('cm:onModalShow', 'Consent modal shown');
+        });
+        
+        window.addEventListener('cm:onModalHide', function() {
+            logEvent('cm:onModalHide', 'Consent modal hidden');
+        });
+        
+        window.addEventListener('cm:onModalReady', function() {
+            logEvent('cm:onModalReady', 'Consent modal ready');
+            refreshStatus();
+        });
+        
+        // Helper functions
+        function logEvent(name, data) {
+            const log = document.getElementById('event-log');
+            const timestamp = new Date().toLocaleTimeString();
+            const entry = document.createElement('div');
+            entry.innerHTML = `<span class="timestamp">[${timestamp}]</span> <span class="event-name">${name}</span> <span class="event-data">${data}</span>`;
+            log.appendChild(entry);
+            log.scrollTop = log.scrollHeight;
+        }
+        
+        function clearLog() {
+            document.getElementById('event-log').innerHTML = '<div><span class="timestamp">[Cleared]</span> <span class="event-name">Event log cleared</span></div>';
+        }
+        
+        function refreshStatus() {
+            const prefs = ConsentManager.getUserPreferences();
+            const cookie = ConsentManager.getCookie();
+            const valid = ConsentManager.validConsent();
+            
+            let statusHTML = '<strong>Accepted Categories:</strong><br>';
+            if (prefs && prefs.acceptedCategories) {
+                prefs.acceptedCategories.forEach(cat => {
+                    statusHTML += `<span class="badge success">${cat}</span> `;
+                });
+                
+                if (prefs.rejectedCategories && prefs.rejectedCategories.length > 0) {
+                    statusHTML += '<br><strong>Rejected Categories:</strong><br>';
+                    prefs.rejectedCategories.forEach(cat => {
+                        statusHTML += `<span class="badge danger">${cat}</span> `;
+                    });
+                }
+            } else {
+                statusHTML += '<span class="badge warning">No consent given yet</span>';
+            }
+            
+            document.getElementById('consent-status').innerHTML = statusHTML;
+            document.getElementById('consent-status').className = valid ? 'status-box success' : 'status-box';
+            
+            document.getElementById('cookie-name').textContent = cookie ? cookie.name : 'cm_cookie';
+            document.getElementById('consent-valid').innerHTML = valid ? '<span class="badge success">Yes</span>' : '<span class="badge danger">No</span>';
+            document.getElementById('accept-type').textContent = prefs ? (prefs.acceptType || 'custom') : 'none';
+            document.getElementById('last-updated').textContent = cookie ? new Date(cookie.data.lastUpdate).toLocaleString() : 'Never';
+        }
+        
+        function checkTrackingScripts() {
+            const analyticsAccepted = ConsentManager.acceptedCategory('analytics');
+            const marketingAccepted = ConsentManager.acceptedCategory('marketing');
+            
+            if (!analyticsAccepted) {
+                document.getElementById('analytics-result').innerHTML = '🚫 Blocked - User did not accept analytics';
+                document.getElementById('analytics-status').className = 'tracking-demo blocked';
+            }
+            
+            if (!marketingAccepted) {
+                document.getElementById('marketing-result').innerHTML = '🚫 Blocked - User did not accept marketing';
+                document.getElementById('marketing-status').className = 'tracking-demo blocked';
+            }
+        }
+        
+        // Control functions
+        function showConsentModal() {
+            ConsentManager.show();
+            logEvent('Action', 'Manually opened consent modal');
+        }
+        
+        function showPreferencesModal() {
+            ConsentManager.showPreferences();
+            logEvent('Action', 'Manually opened preferences modal');
+        }
+        
+        function hideModals() {
+            ConsentManager.hide();
+            ConsentManager.hidePreferences();
+            logEvent('Action', 'Manually closed all modals');
+        }
+        
+        function acceptAll() {
+            ConsentManager.acceptCategory('all');
+            logEvent('Action', 'Accepted all categories');
+            setTimeout(refreshStatus, 100);
+        }
+        
+        function acceptAnalyticsOnly() {
+            ConsentManager.acceptCategory(['necessary', 'analytics']);
+            logEvent('Action', 'Accepted necessary + analytics only');
+            setTimeout(refreshStatus, 100);
+        }
+        
+        function rejectAll() {
+            ConsentManager.acceptCategory([]);
+            logEvent('Action', 'Rejected all (necessary only)');
+            setTimeout(refreshStatus, 100);
+        }
+        
+        function resetConsent() {
+            if (confirm('This will delete your consent cookie and reload the page. Continue?')) {
+                ConsentManager.reset(true);
+                logEvent('Action', 'Reset consent - reloading page');
+                setTimeout(() => location.reload(), 1000);
+            }
+        }
+        
+        // Initial status check
+        setTimeout(refreshStatus, 500);
+        setTimeout(checkTrackingScripts, 600);
+    </script>
+</body>
+</html>
