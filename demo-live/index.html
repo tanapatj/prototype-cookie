@@ -692,7 +692,7 @@
             document.getElementById('cookie-name').textContent = cookie ? cookie.name : 'cm_cookie';
             document.getElementById('consent-valid').innerHTML = valid ? '<span class="badge success">Yes</span>' : '<span class="badge danger">No</span>';
             document.getElementById('accept-type').textContent = prefs ? (prefs.acceptType || 'custom') : 'none';
-            document.getElementById('last-updated').textContent = cookie ? new Date(cookie.data.lastUpdate).toLocaleString() : 'Never';
+            document.getElementById('last-updated').textContent = cookie && cookie.data && cookie.data.lastUpdate ? new Date(cookie.data.lastUpdate).toLocaleString() : 'Never';
         }
         
         function checkTrackingScripts() {
