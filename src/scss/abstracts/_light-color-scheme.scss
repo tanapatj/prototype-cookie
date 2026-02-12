@@ -1,0 +1,51 @@
+/** Light color-scheme **/
+:root{
+    --cm-bg: #ffffff;
+    --cm-primary-color: #2c2f31;
+    --cm-secondary-color: #5e6266;
+
+    --cm-btn-primary-bg: #30363c;
+    --cm-btn-primary-color: #ffffff;
+    --cm-btn-primary-border-color: var(--cm-btn-primary-bg);
+    --cm-btn-primary-hover-bg: #000000;
+    --cm-btn-primary-hover-color: #ffffff;
+    --cm-btn-primary-hover-border-color: var(--cm-btn-primary-hover-bg);
+
+    --cm-btn-secondary-bg: #eaeff2;
+    --cm-btn-secondary-color: var(--cm-primary-color);
+    --cm-btn-secondary-border-color: var(--cm-btn-secondary-bg);
+    --cm-btn-secondary-hover-bg: #d4dae0;
+    --cm-btn-secondary-hover-color: #000000;
+    --cm-btn-secondary-hover-border-color: #d4dae0;
+
+    --cm-separator-border-color: #f0f4f7;
+
+    --cm-toggle-on-bg: var(--cm-btn-primary-bg);
+    --cm-toggle-off-bg: #667481;
+    --cm-toggle-on-knob-bg: #ffffff;
+    --cm-toggle-off-knob-bg: var(--cm-toggle-on-knob-bg);
+
+    --cm-toggle-enabled-icon-color: var(--cm-bg);   // yes (v tick)
+    --cm-toggle-disabled-icon-color: var(--cm-bg);  // no (x tick)
+
+    --cm-toggle-readonly-bg: #d5dee2;
+    --cm-toggle-readonly-knob-bg: #fff;
+    --cm-toggle-readonly-knob-icon-color: var(--cm-toggle-readonly-bg);
+
+    --cm-section-category-border: var(--cm-cookie-category-block-bg);
+
+    --cm-cookie-category-block-bg: #f0f4f7;
+    --cm-cookie-category-block-border: #f0f4f7;
+    --cm-cookie-category-block-hover-bg: #e9eff4;
+    --cm-cookie-category-block-hover-border: #e9eff4;
+    --cm-cookie-category-expanded-block-bg: transparent;
+    --cm-cookie-category-expanded-block-hover-bg: #dee4e9;
+
+    --cm-overlay-bg: rgba(0, 0, 0, 0.65);
+    --cm-webkit-scrollbar-bg: var(--cm-section-category-border);
+    --cm-webkit-scrollbar-hover-bg: var(--cm-btn-primary-hover-bg);
+
+    --cm-footer-bg: var(--cm-btn-secondary-bg);
+    --cm-footer-color: var(--cm-secondary-color);
+    --cm-footer-border-color: #e4eaed;
+}
