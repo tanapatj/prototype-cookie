@@ -1,11 +1,11 @@
-# 🌐 Web Portals Guide - Admin & Customer Registration
+# Web Portals Guide - Admin & Customer Registration
 
-## 🎯 Two Portals Created
+## Portal Overview
 
-### 1. 🔐 **Admin Portal** - For Your Team
+### 1. Admin Portal
 **URL:** https://storage.googleapis.com/consent-manager-cdn-tanapatj-jkt/admin.html
 
-**Purpose:** Generate and manage API keys for customers
+**Purpose:** API key generation and management interface
 
 **Features:**
 - ✅ Generate new API keys with web form
@@ -16,10 +16,10 @@
 
 ---
 
-### 2. 📝 **Customer Portal** - Public Registration
+### 2. Customer Registration Portal
 **URL:** https://storage.googleapis.com/consent-manager-cdn-tanapatj-jkt/register.html
 
-**Purpose:** Let customers register their domains and request API access
+**Purpose:** Self-service registration interface for API access requests
 
 **Features:**
 - ✅ Simple registration form
@@ -30,9 +30,9 @@
 
 ---
 
-## 🚀 How It Works
+## Operational Workflow
 
-### Customer Registration Flow:
+### Customer Registration Process:
 
 ```
 1. Customer visits: 
@@ -48,10 +48,9 @@
    ↓
 4. Request ID generated (e.g., REQ-ABC123)
    ↓
-5. Console logs the registration data
-   (Check browser console for details)
+5. System logs registration data to browser console
    ↓
-6. Customer sees: "Request submitted, API key within 24 hours"
+6. Confirmation displayed: "Request submitted, API key within 24 hours"
 ```
 
 ### Admin API Key Generation Flow:
