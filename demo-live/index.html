@@ -410,8 +410,8 @@
         </div>
         
         <div class="demo-card" style="background: linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%); border-left: 4px solid #28a745;">
-            <h2>🔥 BigQuery Logging ACTIVE (Enhanced!)</h2>
-            <p><strong>This demo now logs detailed consent events to BigQuery in real-time!</strong></p>
+            <h2>🔥 BigQuery Logging ACTIVE + 🔐 AUTHENTICATED</h2>
+            <p><strong>This demo logs detailed consent events to BigQuery in real-time with API key authentication!</strong></p>
             <div class="info-grid">
                 <div class="info-item" style="background: rgba(255,255,255,0.7);">
                     <strong>Dataset:</strong>
@@ -419,15 +419,19 @@
                 </div>
                 <div class="info-item" style="background: rgba(255,255,255,0.7);">
                     <strong>Table:</strong>
-                    consent_events (35 columns)
+                    consent_events (37 columns)
                 </div>
                 <div class="info-item" style="background: rgba(255,255,255,0.7);">
                     <strong>Cloud Function:</strong>
-                    logConsent (asia-southeast1)
+                    logConsentAuth (asia-southeast1)
                 </div>
                 <div class="info-item" style="background: rgba(255,255,255,0.7);">
-                    <strong>New Features:</strong>
-                    ✅ Raw IP + Hash, ✅ UTM tracking, ✅ Thai labels
+                    <strong>Features:</strong>
+                    ✅ API Key Auth, ✅ Domain Whitelist, ✅ Raw IP, ✅ UTM, ✅ Thai labels
+                </div>
+                <div class="info-item" style="background: rgba(255,193,7,0.3); padding: 10px; border-left: 3px solid #ffc107;">
+                    <strong>🔐 Demo API Key:</strong>
+                    demo-key-1234...789abc
                 </div>
             </div>
             <p style="margin-top: 1rem;">
@@ -470,9 +474,10 @@
     <!-- BigQuery Logging Setup -->
     <script>
         // ==========================================
-        // BIGQUERY LOGGING - NOW ACTIVE!
+        // BIGQUERY LOGGING - NOW ACTIVE WITH AUTHENTICATION!
         // ==========================================
-        const BIGQUERY_LOG_URL = 'https://logconsent-pxoxh5sfqa-as.a.run.app';
+        const BIGQUERY_LOG_URL = 'https://logconsentauth-pxoxh5sfqa-as.a.run.app';
+        const BIGQUERY_API_KEY = 'demo-key-12345678-1234-1234-1234-123456789abc';  // Demo API key
         
         // Generate anonymous session ID
         function getSessionId() {
@@ -513,7 +518,10 @@
                 
                 const response = await fetch(BIGQUERY_LOG_URL, {
                     method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
+                    headers: { 
+                        'Content-Type': 'application/json',
+                        'X-API-Key': BIGQUERY_API_KEY
+                    },
                     body: JSON.stringify(payload)
                 });
                 
