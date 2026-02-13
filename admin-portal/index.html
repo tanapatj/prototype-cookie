@@ -1,0 +1,701 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ConsentManager - Admin Portal</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 2rem;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        
+        header {
+            text-align: center;
+            color: white;
+            margin-bottom: 2rem;
+        }
+        
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .subtitle {
+            opacity: 0.9;
+            font-size: 1.1rem;
+        }
+        
+        .card {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+        }
+        
+        .card h2 {
+            color: #667eea;
+            margin-bottom: 1.5rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid #667eea;
+        }
+        
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: #2c3e50;
+        }
+        
+        input, textarea, select {
+            width: 100%;
+            padding: 0.75rem;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: border-color 0.3s;
+        }
+        
+        input:focus, textarea:focus, select:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        
+        .help-text {
+            font-size: 0.875rem;
+            color: #666;
+            margin-top: 0.25rem;
+        }
+        
+        .btn {
+            padding: 0.75rem 2rem;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+        
+        .btn-success {
+            background: #10b981;
+            color: white;
+        }
+        
+        .btn-danger {
+            background: #ef4444;
+            color: white;
+        }
+        
+        .btn-secondary {
+            background: #6b7280;
+            color: white;
+        }
+        
+        .alert {
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+        }
+        
+        .alert-success {
+            background: #d1fae5;
+            color: #065f46;
+            border-left: 4px solid #10b981;
+        }
+        
+        .alert-error {
+            background: #fee2e2;
+            color: #991b1b;
+            border-left: 4px solid #ef4444;
+        }
+        
+        .alert-info {
+            background: #dbeafe;
+            color: #1e40af;
+            border-left: 4px solid #3b82f6;
+        }
+        
+        .api-key-box {
+            background: #f9fafb;
+            border: 2px dashed #667eea;
+            border-radius: 8px;
+            padding: 1.5rem;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9rem;
+            word-break: break-all;
+            margin-top: 1rem;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1rem;
+        }
+        
+        th, td {
+            padding: 1rem;
+            text-align: left;
+            border-bottom: 1px solid #e5e7eb;
+        }
+        
+        th {
+            background: #f9fafb;
+            font-weight: 600;
+            color: #374151;
+        }
+        
+        tr:hover {
+            background: #f9fafb;
+        }
+        
+        .status-badge {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 12px;
+            font-size: 0.875rem;
+            font-weight: 600;
+        }
+        
+        .status-active {
+            background: #d1fae5;
+            color: #065f46;
+        }
+        
+        .status-inactive {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+        
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        
+        .stat-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 1.5rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        
+        .stat-value {
+            font-size: 2.5rem;
+            font-weight: bold;
+            margin: 0.5rem 0;
+        }
+        
+        .stat-label {
+            opacity: 0.9;
+            font-size: 0.875rem;
+        }
+        
+        .actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+        
+        .btn-small {
+            padding: 0.375rem 0.75rem;
+            font-size: 0.875rem;
+        }
+        
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .modal.active {
+            display: flex;
+        }
+        
+        .modal-content {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+            max-width: 600px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+        
+        .close-modal {
+            float: right;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: #6b7280;
+        }
+        
+        .close-modal:hover {
+            color: #374151;
+        }
+        
+        .loading {
+            text-align: center;
+            padding: 2rem;
+            color: #6b7280;
+        }
+        
+        .tabs {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            border-bottom: 2px solid #e5e7eb;
+        }
+        
+        .tab {
+            padding: 1rem 1.5rem;
+            cursor: pointer;
+            border-bottom: 2px solid transparent;
+            margin-bottom: -2px;
+            transition: all 0.3s;
+            color: #6b7280;
+            font-weight: 600;
+        }
+        
+        .tab.active {
+            color: #667eea;
+            border-bottom-color: #667eea;
+        }
+        
+        .tab-content {
+            display: none;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🔐 ConsentManager Admin Portal</h1>
+            <p class="subtitle">Manage API Keys & Monitor Usage</p>
+        </header>
+
+        <!-- Stats Dashboard -->
+        <div class="grid">
+            <div class="stat-card">
+                <div class="stat-label">Total API Keys</div>
+                <div class="stat-value" id="stat-total-keys">0</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Active Keys</div>
+                <div class="stat-value" id="stat-active-keys">0</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Total Events (This Month)</div>
+                <div class="stat-value" id="stat-total-events">0</div>
+            </div>
+        </div>
+
+        <!-- Tabs -->
+        <div class="card">
+            <div class="tabs">
+                <div class="tab active" onclick="switchTab('generate')">Generate API Key</div>
+                <div class="tab" onclick="switchTab('manage')">Manage Keys</div>
+                <div class="tab" onclick="switchTab('usage')">Usage Stats</div>
+            </div>
+
+            <!-- Tab 1: Generate API Key -->
+            <div id="tab-generate" class="tab-content active">
+                <h2>🔑 Generate New API Key</h2>
+                
+                <div id="alert-container"></div>
+                
+                <form id="generate-form" onsubmit="generateAPIKey(event)">
+                    <div class="form-group">
+                        <label for="client-name">Client Name *</label>
+                        <input type="text" id="client-name" required placeholder="e.g., Acme Corp">
+                        <div class="help-text">Company or client name</div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="domains">Allowed Domains *</label>
+                        <textarea id="domains" rows="3" required placeholder="example.com&#10;*.example.com&#10;app.example.com"></textarea>
+                        <div class="help-text">One domain per line. Use * for wildcards (e.g., *.example.com)</div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="email">Contact Email</label>
+                        <input type="email" id="email" placeholder="contact@example.com">
+                        <div class="help-text">Optional: For communication</div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="quota">Monthly Quota (Events)</label>
+                        <input type="number" id="quota" placeholder="Leave empty for unlimited">
+                        <div class="help-text">Optional: Maximum events per month</div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="expires">Expiration Date</label>
+                        <input type="date" id="expires">
+                        <div class="help-text">Optional: Key will expire on this date</div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="notes">Internal Notes</label>
+                        <textarea id="notes" rows="2" placeholder="Any internal notes about this client..."></textarea>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary">🔑 Generate API Key</button>
+                </form>
+
+                <div id="result-container" style="display: none; margin-top: 2rem;">
+                    <div class="alert alert-success">
+                        <strong>✅ API Key Generated Successfully!</strong>
+                        <p style="margin-top: 0.5rem;">Copy this key and send it to your client. It cannot be retrieved later.</p>
+                    </div>
+                    
+                    <div style="margin-top: 1rem;">
+                        <label><strong>API Key:</strong></label>
+                        <div class="api-key-box" id="generated-key"></div>
+                        <button class="btn btn-secondary" style="margin-top: 1rem;" onclick="copyAPIKey()">📋 Copy to Clipboard</button>
+                    </div>
+
+                    <div style="margin-top: 1.5rem;">
+                        <label><strong>Integration Code (for client):</strong></label>
+                        <div class="api-key-box" id="integration-code"></div>
+                        <button class="btn btn-secondary" style="margin-top: 1rem;" onclick="copyIntegrationCode()">📋 Copy Code</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tab 2: Manage Keys -->
+            <div id="tab-manage" class="tab-content">
+                <h2>📋 Manage API Keys</h2>
+                
+                <button class="btn btn-primary" onclick="loadAPIKeys()" style="margin-bottom: 1rem;">🔄 Refresh</button>
+                
+                <div id="keys-loading" class="loading" style="display: none;">
+                    Loading API keys...
+                </div>
+                
+                <div id="keys-container">
+                    <table id="keys-table">
+                        <thead>
+                            <tr>
+                                <th>Client Name</th>
+                                <th>Domains</th>
+                                <th>Status</th>
+                                <th>Usage</th>
+                                <th>Created</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="keys-tbody">
+                            <!-- Will be populated dynamically -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Tab 3: Usage Stats -->
+            <div id="tab-usage" class="tab-content">
+                <h2>📊 Usage Statistics</h2>
+                
+                <button class="btn btn-primary" onclick="loadUsageStats()" style="margin-bottom: 1rem;">🔄 Refresh</button>
+                
+                <div id="usage-loading" class="loading" style="display: none;">
+                    Loading usage statistics...
+                </div>
+                
+                <div id="usage-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Client Name</th>
+                                <th>This Month</th>
+                                <th>Quota</th>
+                                <th>Usage %</th>
+                                <th>Cost (THB)</th>
+                            </tr>
+                        </thead>
+                        <tbody id="usage-tbody">
+                            <!-- Will be populated dynamically -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal for Key Details -->
+    <div id="key-details-modal" class="modal">
+        <div class="modal-content">
+            <span class="close-modal" onclick="closeModal()">&times;</span>
+            <h2>API Key Details</h2>
+            <div id="modal-body"></div>
+        </div>
+    </div>
+
+    <script>
+        // Configuration
+        const PROJECT_ID = 'conicle-ai-dev';
+        const DATASET_ID = 'consent_analytics';
+        
+        // Generate UUID
+        function generateUUID() {
+            return 'cm_' + 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+                const r = Math.random() * 16 | 0;
+                const v = c === 'x' ? r : (r & 0x3 | 0x8);
+                return v.toString(16);
+            });
+        }
+
+        // Show alert
+        function showAlert(message, type = 'success') {
+            const container = document.getElementById('alert-container');
+            const alertClass = type === 'error' ? 'alert-error' : 'alert-success';
+            container.innerHTML = `<div class="alert ${alertClass}">${message}</div>`;
+            setTimeout(() => container.innerHTML = '', 5000);
+        }
+
+        // Switch tabs
+        function switchTab(tabName) {
+            // Update tab buttons
+            document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));
+            event.target.classList.add('active');
+            
+            // Update tab content
+            document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+            document.getElementById(`tab-${tabName}`).classList.add('active');
+            
+            // Load data for the tab
+            if (tabName === 'manage') loadAPIKeys();
+            if (tabName === 'usage') loadUsageStats();
+        }
+
+        // Generate API Key
+        async function generateAPIKey(event) {
+            event.preventDefault();
+            
+            const clientName = document.getElementById('client-name').value;
+            const domainsText = document.getElementById('domains').value;
+            const email = document.getElementById('email').value;
+            const quota = document.getElementById('quota').value;
+            const expires = document.getElementById('expires').value;
+            const notes = document.getElementById('notes').value;
+            
+            // Parse domains
+            const domains = domainsText.split('\n').map(d => d.trim()).filter(d => d);
+            
+            // Generate API key
+            const apiKey = generateUUID();
+            
+            // Show in UI immediately
+            document.getElementById('generated-key').textContent = apiKey;
+            document.getElementById('result-container').style.display = 'block';
+            
+            // Integration code
+            const integrationCode = `// Add to your website
+const BIGQUERY_API_KEY = '${apiKey}';
+const BIGQUERY_LOG_URL = 'https://logconsentauth-pxoxh5sfqa-as.a.run.app';
+
+fetch(BIGQUERY_LOG_URL, {
+  method: 'POST',
+  headers: {
+    'Content-Type': 'application/json',
+    'X-API-Key': BIGQUERY_API_KEY
+  },
+  body: JSON.stringify({ /* your data */ })
+});`;
+            
+            document.getElementById('integration-code').textContent = integrationCode;
+            
+            // Show SQL command to insert into BigQuery
+            const expiresSQL = expires ? `TIMESTAMP('${expires}')` : 'NULL';
+            const quotaSQL = quota ? quota : 'NULL';
+            const emailSQL = email ? `'${email}'` : 'NULL';
+            const notesSQL = notes ? `'${notes}'` : 'NULL';
+            
+            const sqlCommand = `-- Run this command in BigQuery console or gcloud:
+bq query --use_legacy_sql=false "
+INSERT INTO \\`${PROJECT_ID}.${DATASET_ID}.api_keys\\`
+  (api_key, api_key_hash, client_name, client_email, allowed_domains, 
+   is_active, monthly_quota, current_month_usage, created_at, created_by, expires_at, notes)
+VALUES 
+  (
+    '${apiKey}',
+    TO_HEX(SHA256('${apiKey}')),
+    '${clientName}',
+    ${emailSQL},
+    ${JSON.stringify(domains)},
+    TRUE,
+    ${quotaSQL},
+    0,
+    CURRENT_TIMESTAMP(),
+    'admin',
+    ${expiresSQL},
+    ${notesSQL}
+  )
+"`;
+            
+            showAlert(`
+                <strong>✅ API Key Generated!</strong><br><br>
+                <strong>Next Step:</strong> Copy the SQL command below and run it in BigQuery Console:<br>
+                <div style="background: #f3f4f6; padding: 1rem; margin-top: 0.5rem; border-radius: 4px; font-family: monospace; font-size: 0.85rem; overflow-x: auto;">
+                    ${sqlCommand.replace(/\n/g, '<br>')}
+                </div>
+                <br>
+                <a href="https://console.cloud.google.com/bigquery?project=${PROJECT_ID}" target="_blank" style="color: #667eea; font-weight: 600;">Open BigQuery Console →</a>
+            `, 'info');
+            
+            // Scroll to result
+            document.getElementById('result-container').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // Copy functions
+        function copyAPIKey() {
+            const key = document.getElementById('generated-key').textContent;
+            navigator.clipboard.writeText(key);
+            showAlert('✅ API Key copied to clipboard!');
+        }
+
+        function copyIntegrationCode() {
+            const code = document.getElementById('integration-code').textContent;
+            navigator.clipboard.writeText(code);
+            showAlert('✅ Integration code copied to clipboard!');
+        }
+
+        // Load API Keys (requires gcloud or Cloud Functions endpoint)
+        async function loadAPIKeys() {
+            const loading = document.getElementById('keys-loading');
+            const tbody = document.getElementById('keys-tbody');
+            
+            loading.style.display = 'block';
+            
+            // Show instructions since we need BigQuery access
+            tbody.innerHTML = `
+                <tr>
+                    <td colspan="6" style="text-align: center; padding: 2rem;">
+                        <div style="max-width: 600px; margin: 0 auto;">
+                            <h3>📊 View API Keys in BigQuery</h3>
+                            <p style="margin: 1rem 0;">To view all API keys, run this query in BigQuery:</p>
+                            <div style="background: #f3f4f6; padding: 1rem; border-radius: 8px; font-family: monospace; text-align: left; margin: 1rem 0;">
+                                SELECT<br>
+                                &nbsp;&nbsp;client_name,<br>
+                                &nbsp;&nbsp;api_key,<br>
+                                &nbsp;&nbsp;allowed_domains,<br>
+                                &nbsp;&nbsp;is_active,<br>
+                                &nbsp;&nbsp;current_month_usage,<br>
+                                &nbsp;&nbsp;monthly_quota,<br>
+                                &nbsp;&nbsp;created_at<br>
+                                FROM \`${PROJECT_ID}.${DATASET_ID}.api_keys\`<br>
+                                ORDER BY created_at DESC;
+                            </div>
+                            <a href="https://console.cloud.google.com/bigquery?project=${PROJECT_ID}" target="_blank" class="btn btn-primary">Open BigQuery Console →</a>
+                        </div>
+                    </td>
+                </tr>
+            `;
+            
+            loading.style.display = 'none';
+        }
+
+        // Load Usage Stats
+        async function loadUsageStats() {
+            const loading = document.getElementById('usage-loading');
+            const tbody = document.getElementById('usage-tbody');
+            
+            loading.style.display = 'block';
+            
+            // Show instructions
+            tbody.innerHTML = `
+                <tr>
+                    <td colspan="5" style="text-align: center; padding: 2rem;">
+                        <div style="max-width: 600px; margin: 0 auto;">
+                            <h3>📊 View Usage Statistics in BigQuery</h3>
+                            <p style="margin: 1rem 0;">To view usage stats, run this query:</p>
+                            <div style="background: #f3f4f6; padding: 1rem; border-radius: 8px; font-family: monospace; text-align: left; margin: 1rem 0;">
+                                SELECT<br>
+                                &nbsp;&nbsp;k.client_name,<br>
+                                &nbsp;&nbsp;COUNT(e.event_id) as current_month_events,<br>
+                                &nbsp;&nbsp;k.monthly_quota,<br>
+                                &nbsp;&nbsp;ROUND(COUNT(e.event_id) * 100.0 / k.monthly_quota, 2) as percent_used<br>
+                                FROM \`${PROJECT_ID}.${DATASET_ID}.api_keys\` k<br>
+                                LEFT JOIN \`${PROJECT_ID}.${DATASET_ID}.consent_events\` e<br>
+                                &nbsp;&nbsp;ON k.api_key = e.api_key<br>
+                                &nbsp;&nbsp;AND DATE(e.event_timestamp) >= DATE_TRUNC(CURRENT_DATE(), MONTH)<br>
+                                WHERE k.is_active = TRUE<br>
+                                GROUP BY k.client_name, k.monthly_quota<br>
+                                ORDER BY current_month_events DESC;
+                            </div>
+                            <a href="https://console.cloud.google.com/bigquery?project=${PROJECT_ID}" target="_blank" class="btn btn-primary">Open BigQuery Console →</a>
+                        </div>
+                    </td>
+                </tr>
+            `;
+            
+            loading.style.display = 'none';
+        }
+
+        // Close modal
+        function closeModal() {
+            document.getElementById('key-details-modal').classList.remove('active');
+        }
+
+        // Load stats on page load
+        window.addEventListener('DOMContentLoaded', () => {
+            // Show placeholder stats
+            document.getElementById('stat-total-keys').textContent = '—';
+            document.getElementById('stat-active-keys').textContent = '—';
+            document.getElementById('stat-total-events').textContent = '—';
+            
+            // Add info about checking stats in BigQuery
+            const statsNote = document.createElement('div');
+            statsNote.className = 'alert alert-info';
+            statsNote.style.marginTop = '2rem';
+            statsNote.innerHTML = `
+                <strong>📊 View Live Stats:</strong><br>
+                To see real-time statistics, run this query in BigQuery:<br>
+                <code style="background: white; padding: 0.25rem 0.5rem; border-radius: 4px; display: inline-block; margin-top: 0.5rem;">
+                    SELECT * FROM \`${PROJECT_ID}.${DATASET_ID}.cost_dashboard\`
+                </code>
+            `;
+            document.querySelector('.grid').after(statsNote);
+        });
+    </script>
+</body>
+</html>

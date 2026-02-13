@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ConsentManager - Register Your Domain</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .container {
+            max-width: 600px;
+            width: 100%;
+        }
+        
+        .card {
+            background: white;
+            border-radius: 16px;
+            padding: 3rem;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+        
+        header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+        
+        h1 {
+            color: #667eea;
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .subtitle {
+            color: #6b7280;
+            font-size: 1rem;
+        }
+        
+        .features {
+            background: #f9fafb;
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        
+        .feature-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 0.75rem;
+        }
+        
+        .feature-item:last-child {
+            margin-bottom: 0;
+        }
+        
+        .feature-icon {
+            margin-right: 0.75rem;
+            font-size: 1.25rem;
+        }
+        
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: #374151;
+        }
+        
+        .required {
+            color: #ef4444;
+        }
+        
+        input, textarea {
+            width: 100%;
+            padding: 0.75rem;
+            border: 2px solid #e5e7eb;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: border-color 0.3s;
+        }
+        
+        input:focus, textarea:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        
+        .help-text {
+            font-size: 0.875rem;
+            color: #6b7280;
+            margin-top: 0.25rem;
+        }
+        
+        .example {
+            background: #f3f4f6;
+            border-left: 3px solid #667eea;
+            padding: 0.75rem;
+            margin-top: 0.5rem;
+            font-size: 0.875rem;
+            border-radius: 4px;
+        }
+        
+        .example-title {
+            font-weight: 600;
+            color: #667eea;
+            margin-bottom: 0.25rem;
+        }
+        
+        .btn {
+            width: 100%;
+            padding: 1rem;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.4);
+        }
+        
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .alert {
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 1.5rem;
+        }
+        
+        .alert-success {
+            background: #d1fae5;
+            color: #065f46;
+            border-left: 4px solid #10b981;
+        }
+        
+        .alert-error {
+            background: #fee2e2;
+            color: #991b1b;
+            border-left: 4px solid #ef4444;
+        }
+        
+        .alert-info {
+            background: #dbeafe;
+            color: #1e40af;
+            border-left: 4px solid #3b82f6;
+        }
+        
+        .success-content {
+            display: none;
+        }
+        
+        .success-content.active {
+            display: block;
+        }
+        
+        .request-id {
+            background: #f9fafb;
+            border: 2px dashed #667eea;
+            border-radius: 8px;
+            padding: 1rem;
+            font-family: 'Courier New', monospace;
+            font-size: 1.1rem;
+            text-align: center;
+            margin: 1rem 0;
+            color: #667eea;
+            font-weight: bold;
+        }
+        
+        .footer {
+            text-align: center;
+            margin-top: 2rem;
+            color: white;
+            font-size: 0.875rem;
+        }
+        
+        .footer a {
+            color: white;
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="card">
+            <header>
+                <h1>🔐 Register Your Domain</h1>
+                <p class="subtitle">Get API access to ConsentManager logging</p>
+            </header>
+
+            <div class="features">
+                <div class="feature-item">
+                    <span class="feature-icon">✅</span>
+                    <span>GDPR-compliant consent tracking</span>
+                </div>
+                <div class="feature-item">
+                    <span class="feature-icon">📊</span>
+                    <span>Real-time BigQuery analytics</span>
+                </div>
+                <div class="feature-item">
+                    <span class="feature-icon">🔒</span>
+                    <span>Secure API key authentication</span>
+                </div>
+                <div class="feature-item">
+                    <span class="feature-icon">💰</span>
+                    <span>Low cost (~2.6 THB per 1M events)</span>
+                </div>
+            </div>
+
+            <!-- Registration Form -->
+            <form id="registration-form" onsubmit="submitRegistration(event)">
+                <div id="alert-container"></div>
+
+                <div class="form-group">
+                    <label for="company-name">
+                        Company Name <span class="required">*</span>
+                    </label>
+                    <input type="text" id="company-name" required placeholder="e.g., Acme Corporation">
+                </div>
+
+                <div class="form-group">
+                    <label for="contact-name">
+                        Contact Person <span class="required">*</span>
+                    </label>
+                    <input type="text" id="contact-name" required placeholder="e.g., John Doe">
+                </div>
+
+                <div class="form-group">
+                    <label for="email">
+                        Email Address <span class="required">*</span>
+                    </label>
+                    <input type="email" id="email" required placeholder="your@email.com">
+                    <div class="help-text">We'll send your API key to this email</div>
+                </div>
+
+                <div class="form-group">
+                    <label for="domains">
+                        Domain(s) to Whitelist <span class="required">*</span>
+                    </label>
+                    <textarea id="domains" rows="4" required placeholder="example.com&#10;app.example.com&#10;*.example.com"></textarea>
+                    <div class="help-text">One domain per line. Use * for wildcards</div>
+                    <div class="example">
+                        <div class="example-title">Examples:</div>
+                        <code>example.com</code> - Exact domain<br>
+                        <code>*.example.com</code> - All subdomains<br>
+                        <code>app.example.com</code> - Specific subdomain
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="expected-volume">
+                        Expected Monthly Volume
+                    </label>
+                    <input type="text" id="expected-volume" placeholder="e.g., 100,000 events/month">
+                    <div class="help-text">Optional: Helps us plan your quota</div>
+                </div>
+
+                <div class="form-group">
+                    <label for="use-case">
+                        Use Case / Project Description
+                    </label>
+                    <textarea id="use-case" rows="3" placeholder="Tell us about your project..."></textarea>
+                </div>
+
+                <button type="submit" class="btn" id="submit-btn">
+                    🚀 Submit Registration
+                </button>
+            </form>
+
+            <!-- Success Message (hidden initially) -->
+            <div id="success-content" class="success-content">
+                <div class="alert alert-success">
+                    <strong>✅ Registration Submitted!</strong>
+                    <p style="margin-top: 0.5rem;">Your registration has been received. Our team will review it and send your API key within 24 hours.</p>
+                </div>
+
+                <div style="margin: 1.5rem 0;">
+                    <strong>Request ID:</strong>
+                    <div class="request-id" id="request-id"></div>
+                </div>
+
+                <div class="alert alert-info">
+                    <strong>📧 What's Next?</strong>
+                    <ul style="margin-left: 1.5rem; margin-top: 0.5rem;">
+                        <li>You'll receive an email confirmation shortly</li>
+                        <li>Your API key will be sent within 24 hours</li>
+                        <li>Integration documentation will be included</li>
+                    </ul>
+                </div>
+
+                <button class="btn" onclick="resetForm()">Register Another Domain</button>
+            </div>
+        </div>
+
+        <div class="footer">
+            <p>Powered by <strong>ConsentManager</strong></p>
+            <p style="margin-top: 0.5rem;">
+                Questions? Contact us at <a href="mailto:admin@conicle.ai">admin@conicle.ai</a>
+            </p>
+        </div>
+    </div>
+
+    <script>
+        function generateRequestId() {
+            const timestamp = Date.now().toString(36);
+            const random = Math.random().toString(36).substr(2, 5);
+            return `REQ-${timestamp}-${random}`.toUpperCase();
+        }
+
+        function showAlert(message, type = 'success') {
+            const container = document.getElementById('alert-container');
+            const alertClass = type === 'error' ? 'alert-error' : type === 'info' ? 'alert-info' : 'alert-success';
+            container.innerHTML = `<div class="alert ${alertClass}">${message}</div>`;
+        }
+
+        async function submitRegistration(event) {
+            event.preventDefault();
+            
+            const submitBtn = document.getElementById('submit-btn');
+            submitBtn.disabled = true;
+            submitBtn.textContent = '⏳ Submitting...';
+            
+            // Get form data
+            const formData = {
+                requestId: generateRequestId(),
+                companyName: document.getElementById('company-name').value,
+                contactName: document.getElementById('contact-name').value,
+                email: document.getElementById('email').value,
+                domains: document.getElementById('domains').value.split('\n').map(d => d.trim()).filter(d => d),
+                expectedVolume: document.getElementById('expected-volume').value,
+                useCase: document.getElementById('use-case').value,
+                timestamp: new Date().toISOString()
+            };
+            
+            // Simulate API call (in production, this would POST to your backend)
+            setTimeout(() => {
+                // Hide form
+                document.getElementById('registration-form').style.display = 'none';
+                
+                // Show success message
+                document.getElementById('request-id').textContent = formData.requestId;
+                document.getElementById('success-content').classList.add('active');
+                
+                // Log to console (for admin to see)
+                console.log('=== NEW REGISTRATION REQUEST ===');
+                console.log(JSON.stringify(formData, null, 2));
+                console.log('================================');
+                console.log('\nTo generate API key, run:');
+                console.log(`\nnode bigquery/admin-generate-api-key.js \\
+  --client="${formData.companyName}" \\
+  --domains="${formData.domains.join(',')}" \\
+  --email="${formData.email}" \\
+  --notes="Request ID: ${formData.requestId}"`);
+                
+                // In production, you would:
+                // 1. Send this data to your backend API
+                // 2. Store in a database or send email to admin
+                // 3. Admin generates API key using the tool
+                // 4. System emails API key to customer
+                
+                // Show command in alert for admin
+                showAlert(`
+                    <strong>✅ Registration Received</strong><br><br>
+                    <strong>Admin Instructions:</strong> Run this command to generate the API key:<br>
+                    <div style="background: #f3f4f6; padding: 0.75rem; margin-top: 0.5rem; border-radius: 4px; font-family: monospace; font-size: 0.8rem; overflow-x: auto;">
+                        node bigquery/admin-generate-api-key.js \\<br>
+                        &nbsp;&nbsp;--client="${formData.companyName}" \\<br>
+                        &nbsp;&nbsp;--domains="${formData.domains.join(',')}" \\<br>
+                        &nbsp;&nbsp;--email="${formData.email}" \\<br>
+                        &nbsp;&nbsp;--notes="Request ${formData.requestId}"
+                    </div>
+                `, 'info');
+                
+                submitBtn.disabled = false;
+                submitBtn.textContent = '🚀 Submit Registration';
+            }, 1500);
+        }
+
+        function resetForm() {
+            document.getElementById('registration-form').reset();
+            document.getElementById('registration-form').style.display = 'block';
+            document.getElementById('success-content').classList.remove('active');
+            document.getElementById('alert-container').innerHTML = '';
+        }
+
+        // Email template generator (for admin reference)
+        function generateEmailTemplate(formData, apiKey) {
+            return `
+Subject: Your ConsentManager API Key is Ready 🔑
+
+Hi ${formData.contactName},
+
+Thank you for registering with ConsentManager! Your API key is ready.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+🔑 YOUR API KEY
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+${apiKey}
+
+⚠️ Keep this key secure! Don't share it publicly.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+📋 APPROVED DOMAINS
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+${formData.domains.map(d => `  • ${d}`).join('\n')}
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+🚀 INTEGRATION GUIDE
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Add this code to your website:
+
+<script src="https://storage.googleapis.com/consent-manager-cdn-tanapatj-jkt/consent-manager.js"></script>
+
+<script>
+const BIGQUERY_API_KEY = '${apiKey}';
+const BIGQUERY_LOG_URL = 'https://logconsentauth-pxoxh5sfqa-as.a.run.app';
+
+async function logToBigQuery(eventType, eventData) {
+  await fetch(BIGQUERY_LOG_URL, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'X-API-Key': BIGQUERY_API_KEY
+    },
+    body: JSON.stringify({
+      event_type: eventType,
+      cookie: eventData.cookie,
+      // ... other fields
+    })
+  });
+}
+
+// Initialize ConsentManager with logging
+window.ConsentManager = ConsentManager.run({
+  onConsent: ({cookie}) => logToBigQuery('consent', {cookie}),
+  onChange: ({cookie}) => logToBigQuery('change', {cookie})
+});
+</script>
+
+Full documentation: https://github.com/tanapatj/prototype-cookie
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+📊 MONITORING
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+View your consent analytics in BigQuery:
+https://console.cloud.google.com/bigquery?project=conicle-ai-dev
+
+Need help? Reply to this email or contact admin@conicle.ai
+
+Best regards,
+ConsentManager Team
+            `.trim();
+        }
+    </script>
+</body>
+</html>
