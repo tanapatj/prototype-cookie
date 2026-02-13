@@ -24,14 +24,14 @@ function hashIP(ip) {
 }
 
 /**
- * Parse User-Agent string
+ * Parse User-Agent string (detailed)
  */
 function parseUserAgent(ua) {
-  if (!ua) return { browser_name: null, browser_version: null, os_name: null, device_type: 'unknown' };
+  if (!ua) return { browser_name: null, browser_version: null, os_name: null, device_type: 'unknown', full_ua: null };
   
   // Simplified parsing (in production, use a library like 'ua-parser-js')
-  const browser = ua.match(/(Chrome|Firefox|Safari|Edge|Opera)\/(\d+)/i) || [];
-  const os = ua.match(/(Windows|Mac|Linux|Android|iOS)/i) || [];
+  const browser = ua.match(/(Chrome|Firefox|Safari|Edge|Opera|WebView)\/(\d+\.\d+)/i) || [];
+  const os = ua.match(/(Windows NT|Mac OS X|Linux|Android|iOS)[\s\/]?([\d._]+)?/i) || [];
   const isMobile = /Mobile|Android|iPhone|iPad/i.test(ua);
   const isTablet = /iPad|Android(?!.*Mobile)/i.test(ua);
   
@@ -39,8 +39,62 @@ function parseUserAgent(ua) {
     browser_name: browser[1] || 'Unknown',
     browser_version: browser[2] || null,
     os_name: os[1] || 'Unknown',
-    device_type: isTablet ? 'tablet' : (isMobile ? 'mobile' : 'desktop')
+    device_type: isTablet ? 'tablet' : (isMobile ? 'mobile' : 'desktop'),
+    full_ua: ua.substring(0, 500) // Store full UA (truncated)
   };
+}
+
+/**
+ * Parse UTM parameters and campaign data from URL
+ */
+function parseCampaignData(url) {
+  if (!url) return {};
+  
+  try {
+    const urlObj = new URL(url);
+    const params = urlObj.searchParams;
+    
+    return {
+      utm_source: params.get('utm_source') || null,
+      utm_medium: params.get('utm_medium') || null,
+      utm_campaign: params.get('utm_campaign') || null,
+      utm_term: params.get('utm_term') || null,
+      utm_content: params.get('utm_content') || null,
+      gclid: params.get('gclid') || null, // Google Ads
+      fbclid: params.get('fbclid') || null, // Facebook Ads
+      campaignid: params.get('campaignid') || null
+    };
+  } catch (e) {
+    return {};
+  }
+}
+
+/**
+ * Get action label (Thai/English)
+ */
+function getActionLabel(eventType, acceptType) {
+  const labels = {
+    'first_consent': {
+      'all': 'ได้รับการยืนยัน (ทั้งหมด)',
+      'necessary': 'ปฏิเสธทั้งหมด',
+      'custom': 'เลือกบางส่วน',
+      'default': 'ยืนยันครั้งแรก'
+    },
+    'consent': {
+      'all': 'ได้รับการยืนยัน',
+      'necessary': 'ปฏิเสธ',
+      'custom': 'เลือกบางส่วน',
+      'default': 'ยืนยัน'
+    },
+    'change': {
+      'all': 'เปลี่ยนเป็นยอมรับทั้งหมด',
+      'necessary': 'เปลี่ยนเป็นปฏิเสธ',
+      'custom': 'เปลี่ยนการตั้งค่า',
+      'default': 'เปลี่ยนแปลง'
+    }
+  };
+  
+  return labels[eventType]?.[acceptType] || labels[eventType]?.['default'] || eventType;
 }
 
 /**
@@ -99,6 +153,12 @@ exports.logConsent = async (req, res) => {
     // Get geo-location (optional)
     const geo = await getGeoLocation(clientIP);
     
+    // Parse campaign data from URL
+    const campaignData = parseCampaignData(data.pageUrl);
+    
+    // Get action label (Thai/English)
+    const actionLabel = getActionLabel(data.event_type, data.acceptType);
+    
     // Prepare row for BigQuery
     const row = {
       event_id: uuidv4(),
@@ -109,6 +169,7 @@ exports.logConsent = async (req, res) => {
       consent_id: data.cookie?.consentId || null,
       consent_timestamp: data.cookie?.consentTimestamp || null,
       accept_type: data.acceptType || null,
+      action_label: actionLabel, // Thai/English label
       accepted_categories: data.cookie?.categories || [],
       rejected_categories: data.rejectedCategories || [],
       
@@ -123,12 +184,12 @@ exports.logConsent = async (req, res) => {
       session_id: data.sessionId || null,
       user_id: data.userId || null,  // Only if user is logged in
       
-      // Technical data
-      ip_address: data.logIP ? clientIP : null,  // Only log if explicitly allowed
+      // Technical data (NOW WITH RAW IP!)
+      ip_address: data.logIP !== false ? clientIP : null,  // Log raw IP by default now
       ip_hash: hashIP(clientIP),  // Always hash for privacy
       country_code: geo.country_code,
       city: geo.city,
-      user_agent: userAgent,
+      user_agent: userAgent.substring(0, 500), // Truncate long UAs
       browser_name: uaData.browser_name,
       browser_version: uaData.browser_version,
       os_name: uaData.os_name,
@@ -139,6 +200,15 @@ exports.logConsent = async (req, res) => {
       page_title: data.pageTitle || null,
       referrer: data.referrer || null,
       language: data.language || null,
+      
+      // Campaign data (NEW!)
+      utm_source: campaignData.utm_source,
+      utm_medium: campaignData.utm_medium,
+      utm_campaign: campaignData.utm_campaign,
+      utm_term: campaignData.utm_term,
+      utm_content: campaignData.utm_content,
+      gclid: campaignData.gclid,
+      fbclid: campaignData.fbclid,
       
       // Metadata
       consent_manager_version: data.version || '1.0.0',

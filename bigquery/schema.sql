@@ -13,6 +13,7 @@ CREATE TABLE IF NOT EXISTS `conicle-ai-dev.consent_analytics.consent_events` (
   consent_id STRING,  -- UUID from ConsentManager
   consent_timestamp TIMESTAMP,
   accept_type STRING,  -- 'all', 'necessary', 'custom'
+  action_label STRING,  -- Thai/English label (e.g., "ได้รับการยืนยัน", "ปฏิเสธ")
   accepted_categories ARRAY<STRING>,
   rejected_categories ARRAY<STRING>,
   
@@ -28,8 +29,8 @@ CREATE TABLE IF NOT EXISTS `conicle-ai-dev.consent_analytics.consent_events` (
   user_id STRING,     -- NULL for anonymous users, set only if user is logged in
   
   -- Technical Data
-  ip_address STRING,
-  ip_hash STRING,  -- SHA-256 hashed IP for privacy
+  ip_address STRING,  -- Raw IP address (now enabled)
+  ip_hash STRING,     -- SHA-256 hashed IP for privacy backup
   country_code STRING,
   city STRING,
   user_agent STRING,
@@ -43,6 +44,15 @@ CREATE TABLE IF NOT EXISTS `conicle-ai-dev.consent_analytics.consent_events` (
   page_title STRING,
   referrer STRING,
   language STRING,  -- Browser language
+  
+  -- Campaign Tracking (UTM parameters)
+  utm_source STRING,    -- Traffic source (e.g., 'google', 'facebook')
+  utm_medium STRING,    -- Marketing medium (e.g., 'cpc', 'email')
+  utm_campaign STRING,  -- Campaign name
+  utm_term STRING,      -- Paid keywords
+  utm_content STRING,   -- Ad content/variation
+  gclid STRING,         -- Google Ads Click ID
+  fbclid STRING,        -- Facebook Click ID
   
   -- Consent Manager Metadata
   consent_manager_version STRING,

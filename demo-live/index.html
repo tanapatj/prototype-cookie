@@ -410,8 +410,8 @@
         </div>
         
         <div class="demo-card" style="background: linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%); border-left: 4px solid #28a745;">
-            <h2>🔥 BigQuery Logging ACTIVE</h2>
-            <p><strong>This demo now logs consent events to BigQuery in real-time!</strong></p>
+            <h2>🔥 BigQuery Logging ACTIVE (Enhanced!)</h2>
+            <p><strong>This demo now logs detailed consent events to BigQuery in real-time!</strong></p>
             <div class="info-grid">
                 <div class="info-item" style="background: rgba(255,255,255,0.7);">
                     <strong>Dataset:</strong>
@@ -419,19 +419,22 @@
                 </div>
                 <div class="info-item" style="background: rgba(255,255,255,0.7);">
                     <strong>Table:</strong>
-                    consent_events
+                    consent_events (35 columns)
                 </div>
                 <div class="info-item" style="background: rgba(255,255,255,0.7);">
                     <strong>Cloud Function:</strong>
                     logConsent (asia-southeast1)
                 </div>
                 <div class="info-item" style="background: rgba(255,255,255,0.7);">
-                    <strong>Privacy:</strong>
-                    IP hashed, anonymous session
+                    <strong>New Features:</strong>
+                    ✅ Raw IP + Hash, ✅ UTM tracking, ✅ Thai labels
                 </div>
             </div>
             <p style="margin-top: 1rem;">
-                <strong>Try it:</strong> Accept/reject cookies and check the event log below to see BigQuery confirmations! ✅
+                <strong>📊 What's logged:</strong> IP address, browser, device, UTM parameters, action labels (Thai/English), and more!
+            </p>
+            <p style="margin-top: 0.5rem;">
+                <strong>Try it:</strong> Accept/reject cookies and check BigQuery to see detailed logs! ✅
             </p>
             <p style="margin-top: 0.5rem; font-size: 0.9rem;">
                 💡 <em>Query your data:</em> See <code>bigquery/example-queries.sql</code> in the GitHub repo for analytics queries.
@@ -505,7 +508,7 @@
                     
                     // Metadata
                     version: '1.0.0',
-                    logIP: false  // Privacy-first: only hashed IP is logged
+                    logIP: true  // NOW ENABLED: Raw IP address will be logged (with hash backup)
                 };
                 
                 const response = await fetch(BIGQUERY_LOG_URL, {
