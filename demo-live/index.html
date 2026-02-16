@@ -513,33 +513,6 @@
                             <input type="range" id="btn-radius" min="0" max="30" value="8" onchange="updateStyle()">
                         </div>
                     </div>
-                    
-                    <!-- Advanced Options -->
-                    <div class="config-group">
-                        <h4>⚙️ Advanced</h4>
-                        <div class="config-item">
-                            <label for="modal-layout">Preferences Layout:</label>
-                            <select id="modal-layout" onchange="updateStyle()">
-                                <option value="box">Box</option>
-                                <option value="bar">Wide</option>
-                            </select>
-                        </div>
-                        <div class="config-item">
-                            <label for="modal-position">Preferences Position:</label>
-                            <select id="modal-position" onchange="updateStyle()">
-                                <option value="center">Center</option>
-                                <option value="left">Left</option>
-                                <option value="right">Right</option>
-                            </select>
-                        </div>
-                        <div class="config-item">
-                            <label for="flip-buttons">Button Order:</label>
-                            <select id="flip-buttons" onchange="updateStyle()">
-                                <option value="false">Accept First</option>
-                                <option value="true">Reject First</option>
-                            </select>
-                        </div>
-                    </div>
                 </div>
                 
                 <div class="config-actions">
@@ -1088,14 +1061,12 @@
                     consentModal: {
                         layout: document.getElementById('layout').value,
                         position: document.getElementById('position').value,
-                        transition: document.getElementById('transition').value,
-                        flipButtons: document.getElementById('flip-buttons').value === 'true'
+                        transition: document.getElementById('transition').value
                     },
                     preferencesModal: {
-                        layout: document.getElementById('modal-layout').value,
-                        position: document.getElementById('modal-position').value,
-                        transition: document.getElementById('transition').value,
-                        flipButtons: document.getElementById('flip-buttons').value === 'true'
+                        layout: 'box',  // Default: box layout
+                        position: 'center',  // Default: center position
+                        transition: document.getElementById('transition').value
                     }
                 },
                 styles: {
@@ -1191,19 +1162,12 @@
 ConsentManager.run({
     // ... your existing configuration ...
     
-    // GUI Options (layout, position, etc.)
+    // GUI Options
     guiOptions: {
         consentModal: {
             layout: '${config.guiOptions.consentModal.layout}',
             position: '${config.guiOptions.consentModal.position}',
-            transition: '${config.guiOptions.consentModal.transition}',
-            flipButtons: ${config.guiOptions.consentModal.flipButtons}
-        },
-        preferencesModal: {
-            layout: '${config.guiOptions.preferencesModal.layout}',
-            position: '${config.guiOptions.preferencesModal.position}',
-            transition: '${config.guiOptions.preferencesModal.transition}',
-            flipButtons: ${config.guiOptions.preferencesModal.flipButtons}
+            transition: '${config.guiOptions.consentModal.transition}'
         }
     }
 });
@@ -1246,9 +1210,6 @@ ConsentManager.run({
             document.getElementById('layout').value = 'box';
             document.getElementById('position').value = 'bottom';
             document.getElementById('transition').value = 'slide';
-            document.getElementById('modal-layout').value = 'box';
-            document.getElementById('modal-position').value = 'center';
-            document.getElementById('flip-buttons').value = 'false';
             document.getElementById('font-size').value = '14';
             document.getElementById('border-radius').value = '12';
             document.getElementById('btn-radius').value = '8';
