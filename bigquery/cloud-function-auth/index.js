@@ -211,14 +211,17 @@ async function getGeoLocation(ip) {
  * Main Cloud Function handler
  */
 exports.logConsent = async (req, res) => {
-  // CORS headers
-  const origin = req.headers.origin || req.headers.referer;
-  res.set('Access-Control-Allow-Origin', origin || '*');
+  // CORS: only set Access-Control-Allow-Origin for validated origins
+  const origin = req.headers.origin;
   res.set('Access-Control-Allow-Methods', 'POST, OPTIONS');
   res.set('Access-Control-Allow-Headers', 'Content-Type, X-API-Key');
+  res.set('Vary', 'Origin');
   
-  // Handle preflight
+  // Handle preflight - allow preflight from any origin so browsers can send the real request
   if (req.method === 'OPTIONS') {
+    if (origin) {
+      res.set('Access-Control-Allow-Origin', origin);
+    }
     res.status(204).send('');
     return;
   }
@@ -230,18 +233,22 @@ exports.logConsent = async (req, res) => {
   }
   
   try {
-    // Get API key from header
-    const apiKey = req.headers['x-api-key'] || req.body.apiKey;
+    // SECURITY: Only accept API key from header, not request body
+    const apiKey = req.headers['x-api-key'];
     
     // Validate API key and domain
     const validation = await validateAPIKey(apiKey, origin);
     if (!validation.valid) {
       console.warn('Auth failed:', validation.error, 'Origin:', origin);
       res.status(401).json({ 
-        error: 'Authentication failed',
-        message: validation.error 
+        error: 'Authentication failed'
       });
       return;
+    }
+
+    // CORS: only set Allow-Origin after successful API key + domain validation
+    if (origin) {
+      res.set('Access-Control-Allow-Origin', origin);
     }
 
     const data = req.body;

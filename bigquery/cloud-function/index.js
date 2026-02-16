@@ -20,7 +20,11 @@ const TABLE_ID = 'consent_events';
  */
 function hashIP(ip) {
   if (!ip) return null;
-  return crypto.createHash('sha256').update(ip + process.env.IP_SALT || 'conicle-salt').digest('hex');
+  const salt = process.env.IP_SALT;
+  if (!salt) {
+    console.warn('WARNING: IP_SALT environment variable is not set. IP hashing may be insecure.');
+  }
+  return crypto.createHash('sha256').update(ip + (salt || 'conicle-salt')).digest('hex');
 }
 
 /**
@@ -111,13 +115,35 @@ async function getGeoLocation(ip) {
 }
 
 /**
+ * DEPRECATED: Use the authenticated version (cloud-function-auth) instead.
+ * This function is kept for backward compatibility only.
+ * 
  * Main Cloud Function handler
  */
+
+// Allowed origins - restrict to known domains
+const ALLOWED_ORIGINS = [
+  'https://storage.googleapis.com',
+  /^https:\/\/.*\.conicle\.ai$/
+];
+
+function isOriginAllowed(origin) {
+  if (!origin) return false;
+  return ALLOWED_ORIGINS.some(allowed => {
+    if (typeof allowed === 'string') return allowed === origin;
+    return allowed.test(origin);
+  });
+}
+
 exports.logConsent = async (req, res) => {
-  // CORS headers
-  res.set('Access-Control-Allow-Origin', '*'); // In production, restrict to your domains
+  // CORS headers - restricted to known domains only
+  const origin = req.headers.origin;
+  if (isOriginAllowed(origin)) {
+    res.set('Access-Control-Allow-Origin', origin);
+  }
   res.set('Access-Control-Allow-Methods', 'POST, OPTIONS');
   res.set('Access-Control-Allow-Headers', 'Content-Type');
+  res.set('Vary', 'Origin');
   
   // Handle preflight
   if (req.method === 'OPTIONS') {

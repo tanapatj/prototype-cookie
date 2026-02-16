@@ -330,6 +330,13 @@
             return `REQ-${timestamp}-${random}`.toUpperCase();
         }
 
+        // Escape HTML to prevent XSS when inserting user data into innerHTML
+        function escapeHtml(str) {
+            const div = document.createElement('div');
+            div.textContent = str;
+            return div.innerHTML;
+        }
+
         function showAlert(message, type = 'success') {
             const container = document.getElementById('alert-container');
             const alertClass = type === 'error' ? 'alert-error' : type === 'info' ? 'alert-info' : 'alert-success';
@@ -381,16 +388,16 @@
                 // 3. Admin generates API key using the tool
                 // 4. System emails API key to customer
                 
-                // Show command in alert for admin
+                // Show command in alert for admin (escape all user-provided values)
                 showAlert(`
                     <strong>✅ Registration Received</strong><br><br>
                     <strong>Admin Instructions:</strong> Run this command to generate the API key:<br>
                     <div style="background: #f3f4f6; padding: 0.75rem; margin-top: 0.5rem; border-radius: 4px; font-family: monospace; font-size: 0.8rem; overflow-x: auto;">
                         node bigquery/admin-generate-api-key.js \\<br>
-                        &nbsp;&nbsp;--client="${formData.companyName}" \\<br>
-                        &nbsp;&nbsp;--domains="${formData.domains.join(',')}" \\<br>
-                        &nbsp;&nbsp;--email="${formData.email}" \\<br>
-                        &nbsp;&nbsp;--notes="Request ${formData.requestId}"
+                        &nbsp;&nbsp;--client="${escapeHtml(formData.companyName)}" \\<br>
+                        &nbsp;&nbsp;--domains="${escapeHtml(formData.domains.join(','))}" \\<br>
+                        &nbsp;&nbsp;--email="${escapeHtml(formData.email)}" \\<br>
+                        &nbsp;&nbsp;--notes="Request ${escapeHtml(formData.requestId)}"
                     </div>
                 `, 'info');
                 

@@ -430,8 +430,8 @@
                     ✅ API Key Auth, ✅ Domain Whitelist, ✅ Raw IP, ✅ UTM, ✅ Thai labels
                 </div>
                 <div class="info-item" style="background: rgba(255,193,7,0.3); padding: 10px; border-left: 3px solid #ffc107;">
-                    <strong>🔐 Demo API Key:</strong>
-                    demo-key-1234...789abc
+                    <strong>🔐 API Key:</strong>
+                    Loaded securely via server config
                 </div>
             </div>
             <p style="margin-top: 1rem;">
@@ -476,8 +476,10 @@
         // ==========================================
         // BIGQUERY LOGGING - NOW ACTIVE WITH AUTHENTICATION!
         // ==========================================
-        const BIGQUERY_LOG_URL = 'https://logconsentauth-pxoxh5sfqa-as.a.run.app';
-        const BIGQUERY_API_KEY = 'demo-key-12345678-1234-1234-1234-123456789abc';  // Demo API key
+        // SECURITY: API key must be injected server-side at deploy time.
+        // Never hardcode API keys in client-side source code.
+        const BIGQUERY_LOG_URL = window.__CM_CONFIG__?.logUrl || '';
+        const BIGQUERY_API_KEY = window.__CM_CONFIG__?.apiKey || '';
         
         // Generate anonymous session ID
         function getSessionId() {
@@ -662,12 +664,35 @@
             refreshStatus();
         });
         
+        // Escape HTML to prevent XSS
+        function escapeHtml(str) {
+            const div = document.createElement('div');
+            div.textContent = str;
+            return div.innerHTML;
+        }
+
         // Helper functions
         function logEvent(name, data) {
             const log = document.getElementById('event-log');
-            const timestamp = new Date().toLocaleTimeString();
             const entry = document.createElement('div');
-            entry.innerHTML = `<span class="timestamp">[${timestamp}]</span> <span class="event-name">${name}</span> <span class="event-data">${data}</span>`;
+
+            const ts = document.createElement('span');
+            ts.className = 'timestamp';
+            ts.textContent = '[' + new Date().toLocaleTimeString() + ']';
+
+            const nm = document.createElement('span');
+            nm.className = 'event-name';
+            nm.textContent = name;
+
+            const dt = document.createElement('span');
+            dt.className = 'event-data';
+            dt.textContent = data;
+
+            entry.appendChild(ts);
+            entry.appendChild(document.createTextNode(' '));
+            entry.appendChild(nm);
+            entry.appendChild(document.createTextNode(' '));
+            entry.appendChild(dt);
             log.appendChild(entry);
             log.scrollTop = log.scrollHeight;
         }
@@ -684,13 +709,13 @@
             let statusHTML = '<strong>Accepted Categories:</strong><br>';
             if (prefs && prefs.acceptedCategories) {
                 prefs.acceptedCategories.forEach(cat => {
-                    statusHTML += `<span class="badge success">${cat}</span> `;
+                    statusHTML += `<span class="badge success">${escapeHtml(cat)}</span> `;
                 });
                 
                 if (prefs.rejectedCategories && prefs.rejectedCategories.length > 0) {
                     statusHTML += '<br><strong>Rejected Categories:</strong><br>';
                     prefs.rejectedCategories.forEach(cat => {
-                        statusHTML += `<span class="badge danger">${cat}</span> `;
+                        statusHTML += `<span class="badge danger">${escapeHtml(cat)}</span> `;
                     });
                 }
             } else {

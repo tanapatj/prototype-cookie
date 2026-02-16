@@ -475,19 +475,30 @@
         const PROJECT_ID = 'conicle-ai-dev';
         const DATASET_ID = 'consent_analytics';
         
-        // Generate UUID
+        // Generate UUID using cryptographically secure random
         function generateUUID() {
-            return 'cm_' + 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
-                const r = Math.random() * 16 | 0;
-                const v = c === 'x' ? r : (r & 0x3 | 0x8);
-                return v.toString(16);
+            return 'cm_' + ([1e7]+-1e3+-4e3+-8e3+-1e11).replace(/[018]/g, function(c) {
+                return (c ^ crypto.getRandomValues(new Uint8Array(1))[0] & 15 >> c / 4).toString(16);
             });
         }
 
-        // Show alert
+        // Escape HTML to prevent XSS when inserting into innerHTML
+        function escapeHtml(str) {
+            const div = document.createElement('div');
+            div.textContent = str;
+            return div.innerHTML;
+        }
+
+        // Escape single quotes to prevent SQL injection in generated SQL strings
+        function escapeSql(str) {
+            if (!str) return str;
+            return str.replace(/'/g, "\\'");
+        }
+
+        // Show alert (uses safe HTML for static structure, escapes dynamic values)
         function showAlert(message, type = 'success') {
             const container = document.getElementById('alert-container');
-            const alertClass = type === 'error' ? 'alert-error' : 'alert-success';
+            const alertClass = type === 'error' ? 'alert-error' : type === 'info' ? 'alert-info' : 'alert-success';
             container.innerHTML = `<div class="alert ${alertClass}">${message}</div>`;
             setTimeout(() => container.innerHTML = '', 5000);
         }
@@ -544,11 +555,18 @@ fetch(BIGQUERY_LOG_URL, {
             
             document.getElementById('integration-code').textContent = integrationCode;
             
-            // Show SQL command to insert into BigQuery
-            const expiresSQL = expires ? `TIMESTAMP('${expires}')` : 'NULL';
-            const quotaSQL = quota ? quota : 'NULL';
-            const emailSQL = email ? `'${email}'` : 'NULL';
-            const notesSQL = notes ? `'${notes}'` : 'NULL';
+            // Sanitize all user inputs before building SQL
+            const safeClientName = escapeSql(clientName);
+            const safeEmail = email ? escapeSql(email) : null;
+            const safeNotes = notes ? escapeSql(notes) : null;
+            const safeExpires = expires ? escapeSql(expires) : null;
+            const safeQuota = quota ? parseInt(quota, 10) : null;
+            const safeDomains = domains.map(d => escapeSql(d));
+
+            const expiresSQL = safeExpires ? `TIMESTAMP('${safeExpires}')` : 'NULL';
+            const quotaSQL = !isNaN(safeQuota) && safeQuota !== null ? safeQuota : 'NULL';
+            const emailSQL = safeEmail ? `'${safeEmail}'` : 'NULL';
+            const notesSQL = safeNotes ? `'${safeNotes}'` : 'NULL';
             
             const sqlCommand = `-- Run this command in BigQuery console or gcloud:
 bq query --use_legacy_sql=false "
@@ -559,9 +577,9 @@ VALUES
   (
     '${apiKey}',
     TO_HEX(SHA256('${apiKey}')),
-    '${clientName}',
+    '${safeClientName}',
     ${emailSQL},
-    ${JSON.stringify(domains)},
+    ${JSON.stringify(safeDomains)},
     TRUE,
     ${quotaSQL},
     0,
@@ -576,10 +594,10 @@ VALUES
                 <strong>✅ API Key Generated!</strong><br><br>
                 <strong>Next Step:</strong> Copy the SQL command below and run it in BigQuery Console:<br>
                 <div style="background: #f3f4f6; padding: 1rem; margin-top: 0.5rem; border-radius: 4px; font-family: monospace; font-size: 0.85rem; overflow-x: auto;">
-                    ${sqlCommand.replace(/\n/g, '<br>')}
+                    ${escapeHtml(sqlCommand).replace(/\n/g, '<br>')}
                 </div>
                 <br>
-                <a href="https://console.cloud.google.com/bigquery?project=${PROJECT_ID}" target="_blank" style="color: #667eea; font-weight: 600;">Open BigQuery Console →</a>
+                <a href="https://console.cloud.google.com/bigquery?project=${escapeHtml(PROJECT_ID)}" target="_blank" style="color: #667eea; font-weight: 600;">Open BigQuery Console →</a>
             `, 'info');
             
             // Scroll to result
