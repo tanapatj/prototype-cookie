@@ -1138,65 +1138,45 @@
                 existingStyle.remove();
             }
             
-            // Create new style element
+            // The library uses CSS custom properties on :root
+            // We override them on #cm-main for higher specificity
             const styleEl = document.createElement('style');
             styleEl.id = 'custom-consent-style';
             styleEl.textContent = `
-                /* Custom ConsentManager Styles */
-                :root {
-                    --cm-primary-color: ${styles.primaryColor};
-                    --cm-bg-color: ${styles.backgroundColor};
-                    --cm-text-color: ${styles.textColor};
-                    --cm-btn-text-color: ${styles.buttonTextColor};
-                }
-                
-                #cm-consent-modal,
-                #cm-preferences-modal {
+                #cm-main {
+                    /* Background & text */
+                    --cm-bg: ${styles.backgroundColor};
+                    --cm-primary-color: ${styles.textColor};
+                    --cm-secondary-color: ${styles.textColor};
+                    
+                    /* Primary button */
+                    --cm-btn-primary-bg: ${styles.primaryColor};
+                    --cm-btn-primary-color: ${styles.buttonTextColor};
+                    --cm-btn-primary-border-color: ${styles.primaryColor};
+                    --cm-btn-primary-hover-bg: ${styles.primaryColor};
+                    --cm-btn-primary-hover-color: ${styles.buttonTextColor};
+                    --cm-btn-primary-hover-border-color: ${styles.primaryColor};
+                    
+                    /* Border radius */
+                    --cm-modal-border-radius: ${styles.borderRadius};
+                    --cm-btn-border-radius: ${styles.buttonRadius};
+                    
+                    /* Toggle */
+                    --cm-toggle-on-bg: ${styles.primaryColor};
+                    
+                    /* Link color */
+                    --cm-link-color: ${styles.primaryColor};
+                    
+                    /* Font size */
                     font-size: ${styles.fontSize} !important;
                 }
                 
-                #cm-consent-modal .cm,
-                #cm-preferences-modal .cm {
-                    background-color: ${styles.backgroundColor} !important;
-                    color: ${styles.textColor} !important;
-                    border-radius: ${styles.borderRadius} !important;
+                #cm-main .cm__btn:hover {
+                    opacity: 0.85;
                 }
                 
-                #cm-consent-modal .cm-btn,
-                #cm-preferences-modal .cm-btn {
-                    border-radius: ${styles.buttonRadius} !important;
-                }
-                
-                #cm-consent-modal .cm-btn-primary,
-                #cm-preferences-modal .cm-btn-primary,
-                #cm-consent-modal .cm-btn.cm-btn-accept,
-                #cm-preferences-modal .cm-btn.cm-btn-accept,
-                #cm-consent-modal .cm-btn.cm-btn-accept-all,
-                #cm-preferences-modal .cm-btn.cm-btn-accept-all {
-                    background-color: ${styles.primaryColor} !important;
-                    color: ${styles.buttonTextColor} !important;
-                    border-color: ${styles.primaryColor} !important;
-                }
-                
-                #cm-consent-modal .cm-btn-primary:hover,
-                #cm-preferences-modal .cm-btn-primary:hover,
-                #cm-consent-modal .cm-btn.cm-btn-accept:hover,
-                #cm-preferences-modal .cm-btn.cm-btn-accept:hover {
-                    opacity: 0.9;
-                }
-                
-                #cm-preferences-modal .cm-section-title,
-                #cm-preferences-modal .cm-toggle-label {
-                    color: ${styles.textColor} !important;
-                }
-                
-                #cm-preferences-modal .cm-toggle-input:checked + .cm-toggle-slider {
-                    background-color: ${styles.primaryColor} !important;
-                }
-                
-                #cm-consent-modal h2,
-                #cm-preferences-modal h2 {
-                    color: ${styles.textColor} !important;
+                #cm-main .pm__btn:hover {
+                    opacity: 0.85;
                 }
             `;
             
@@ -1211,7 +1191,7 @@
 ConsentManager.run({
     // ... your existing configuration ...
     
-    // GUI Options
+    // GUI Options (layout, position, etc.)
     guiOptions: {
         consentModal: {
             layout: '${config.guiOptions.consentModal.layout}',
@@ -1228,37 +1208,28 @@ ConsentManager.run({
     }
 });
 
-// Custom CSS Styles (add to your stylesheet)
-<style>
-:root {
-    --cm-primary-color: ${config.styles.primaryColor};
-    --cm-bg-color: ${config.styles.backgroundColor};
-    --cm-text-color: ${config.styles.textColor};
-}
+/* Custom CSS — add to your stylesheet or a <style> tag */
+#cm-main {
+    /* Colors */
+    --cm-bg: ${config.styles.backgroundColor};
+    --cm-primary-color: ${config.styles.textColor};
+    --cm-secondary-color: ${config.styles.textColor};
+    --cm-btn-primary-bg: ${config.styles.primaryColor};
+    --cm-btn-primary-color: ${config.styles.buttonTextColor};
+    --cm-btn-primary-border-color: ${config.styles.primaryColor};
+    --cm-btn-primary-hover-bg: ${config.styles.primaryColor};
+    --cm-btn-primary-hover-color: ${config.styles.buttonTextColor};
+    --cm-btn-primary-hover-border-color: ${config.styles.primaryColor};
+    --cm-toggle-on-bg: ${config.styles.primaryColor};
+    --cm-link-color: ${config.styles.primaryColor};
 
-#cm-consent-modal,
-#cm-preferences-modal {
+    /* Border radius */
+    --cm-modal-border-radius: ${config.styles.borderRadius};
+    --cm-btn-border-radius: ${config.styles.buttonRadius};
+
+    /* Font size */
     font-size: ${config.styles.fontSize} !important;
-}
-
-#cm-consent-modal .cm,
-#cm-preferences-modal .cm {
-    background-color: ${config.styles.backgroundColor} !important;
-    color: ${config.styles.textColor} !important;
-    border-radius: ${config.styles.borderRadius} !important;
-}
-
-#cm-consent-modal .cm-btn,
-#cm-preferences-modal .cm-btn {
-    border-radius: ${config.styles.buttonRadius} !important;
-}
-
-#cm-consent-modal .cm-btn-primary,
-#cm-preferences-modal .cm-btn-primary {
-    background-color: ${config.styles.primaryColor} !important;
-    color: ${config.styles.buttonTextColor} !important;
-}
-</style>`;
+}`;
             
             codeOutput.textContent = configCode;
             codeOutput.classList.add('show');
