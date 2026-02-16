@@ -475,7 +475,7 @@
                             <select id="layout" onchange="updateStyle()">
                                 <option value="box">Box (Default)</option>
                                 <option value="cloud">Cloud</option>
-                                <option value="bar">Bar</option>
+                                <option value="bar">Bar (Full Width)</option>
                             </select>
                         </div>
                         <div class="config-item">
@@ -487,6 +487,9 @@
                                 <option value="bottom left">Bottom Left</option>
                                 <option value="bottom right">Bottom Right</option>
                             </select>
+                            <small id="position-note" style="display: none; color: #666; font-size: 0.85em; margin-top: 0.3rem;">
+                                Note: Bar layout only uses Top or Bottom
+                            </small>
                         </div>
                         <div class="config-item">
                             <label for="transition">Transition:</label>
@@ -1053,19 +1056,47 @@
                 document.getElementById('border-radius').value + 'px';
             document.getElementById('btn-radius-value').textContent = 
                 document.getElementById('btn-radius').value + 'px';
+            
+            // Handle position restrictions for bar layout
+            const layout = document.getElementById('layout').value;
+            const positionSelect = document.getElementById('position');
+            const positionNote = document.getElementById('position-note');
+            const currentPosition = positionSelect.value;
+            
+            if (layout === 'bar') {
+                // Bar layout only supports top or bottom
+                positionNote.style.display = 'block';
+                const validPositions = ['top', 'bottom'];
+                if (!validPositions.includes(currentPosition)) {
+                    positionSelect.value = 'bottom';
+                    showCopySuccess('ℹ️ Bar layout auto-adjusted to Bottom position');
+                }
+            } else {
+                positionNote.style.display = 'none';
+            }
         }
         
         function getConfigFromUI() {
+            const layout = document.getElementById('layout').value;
+            let position = document.getElementById('position').value;
+            
+            // Bar layout only supports "top" or "bottom" positions (no middle, no corners)
+            if (layout === 'bar') {
+                if (position !== 'top' && position !== 'bottom') {
+                    position = 'bottom';  // Auto-adjust to bottom for bar
+                }
+            }
+            
             return {
                 guiOptions: {
                     consentModal: {
-                        layout: document.getElementById('layout').value,
-                        position: document.getElementById('position').value,
+                        layout: layout,
+                        position: position,
                         transition: document.getElementById('transition').value
                     },
                     preferencesModal: {
-                        layout: 'box',  // Default: box layout
-                        position: 'center',  // Default: center position
+                        layout: 'box',
+                        position: 'center',
                         transition: document.getElementById('transition').value
                     }
                 },
@@ -1085,13 +1116,15 @@
             const config = getConfigFromUI();
             currentConfig = config;
             
+            console.log('Applying style with config:', config);
+            
             // Apply custom CSS
             applyCustomCSS(config.styles);
             
             // Reinitialize ConsentManager with new guiOptions
             reinitializeConsentManager(config.guiOptions);
             
-            logEvent('Style', 'Style configuration applied - ConsentManager reinitialized');
+            logEvent('Style', `Applied: ${config.guiOptions.consentModal.layout} layout, ${config.guiOptions.consentModal.position} position`);
             
             // Show success message
             showCopySuccess('✨ Style applied! Opening consent modal...');
