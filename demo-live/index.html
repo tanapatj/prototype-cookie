@@ -265,6 +265,145 @@
             background: #ffc107;
             color: #333;
         }
+        
+        /* Style Configurator */
+        .config-panel {
+            background: #f8f9fa;
+            border: 2px solid #667eea;
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .config-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-top: 1rem;
+        }
+        
+        .config-group {
+            background: white;
+            padding: 1rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+        
+        .config-group h4 {
+            color: #764ba2;
+            margin-bottom: 0.8rem;
+            font-size: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .config-item {
+            margin-bottom: 1rem;
+        }
+        
+        .config-item:last-child {
+            margin-bottom: 0;
+        }
+        
+        .config-item label {
+            display: block;
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: #495057;
+            margin-bottom: 0.4rem;
+        }
+        
+        .config-item input[type="color"] {
+            width: 100%;
+            height: 40px;
+            border: 2px solid #dee2e6;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+        
+        .config-item input[type="range"] {
+            width: 100%;
+        }
+        
+        .config-item select {
+            width: 100%;
+            padding: 0.5rem;
+            border: 2px solid #dee2e6;
+            border-radius: 6px;
+            font-size: 0.9rem;
+            background: white;
+            cursor: pointer;
+        }
+        
+        .config-item select:focus,
+        .config-item input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        
+        .range-value {
+            display: inline-block;
+            min-width: 40px;
+            text-align: right;
+            font-weight: 600;
+            color: #667eea;
+            margin-left: 0.5rem;
+        }
+        
+        .config-actions {
+            display: flex;
+            gap: 0.8rem;
+            margin-top: 1rem;
+            flex-wrap: wrap;
+        }
+        
+        .btn-config {
+            flex: 1;
+            min-width: 150px;
+            padding: 0.7rem 1.2rem;
+            font-size: 0.95rem;
+        }
+        
+        .code-output {
+            background: #1e1e1e;
+            color: #d4d4d4;
+            padding: 1rem;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.85rem;
+            max-height: 400px;
+            overflow-y: auto;
+            margin-top: 1rem;
+            display: none;
+        }
+        
+        .code-output.show {
+            display: block;
+        }
+        
+        .copy-success {
+            background: #28a745;
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 10000;
+            animation: slideIn 0.3s ease;
+        }
+        
+        @keyframes slideIn {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
     </style>
 </head>
 <body>
@@ -298,6 +437,124 @@
                     <strong>Last Updated:</strong>
                     <span id="last-updated">-</span>
                 </div>
+            </div>
+        </div>
+        
+        <div class="demo-card">
+            <h2>🎨 Style Configurator</h2>
+            <p>Customize the consent banner appearance in real-time!</p>
+            
+            <div class="config-panel">
+                <div class="config-grid">
+                    <!-- Colors -->
+                    <div class="config-group">
+                        <h4>🎨 Colors</h4>
+                        <div class="config-item">
+                            <label for="primary-color">Primary Color:</label>
+                            <input type="color" id="primary-color" value="#667eea" onchange="updateStyle()">
+                        </div>
+                        <div class="config-item">
+                            <label for="bg-color">Background Color:</label>
+                            <input type="color" id="bg-color" value="#ffffff" onchange="updateStyle()">
+                        </div>
+                        <div class="config-item">
+                            <label for="text-color">Text Color:</label>
+                            <input type="color" id="text-color" value="#2c3e50" onchange="updateStyle()">
+                        </div>
+                        <div class="config-item">
+                            <label for="btn-text-color">Button Text:</label>
+                            <input type="color" id="btn-text-color" value="#ffffff" onchange="updateStyle()">
+                        </div>
+                    </div>
+                    
+                    <!-- Layout & Position -->
+                    <div class="config-group">
+                        <h4>📐 Layout & Position</h4>
+                        <div class="config-item">
+                            <label for="layout">Layout Type:</label>
+                            <select id="layout" onchange="updateStyle()">
+                                <option value="box">Box (Default)</option>
+                                <option value="cloud">Cloud</option>
+                                <option value="bar">Bar</option>
+                            </select>
+                        </div>
+                        <div class="config-item">
+                            <label for="position">Position:</label>
+                            <select id="position" onchange="updateStyle()">
+                                <option value="bottom">Bottom</option>
+                                <option value="middle">Middle</option>
+                                <option value="top">Top</option>
+                                <option value="bottom left">Bottom Left</option>
+                                <option value="bottom right">Bottom Right</option>
+                            </select>
+                        </div>
+                        <div class="config-item">
+                            <label for="transition">Transition:</label>
+                            <select id="transition" onchange="updateStyle()">
+                                <option value="slide">Slide</option>
+                                <option value="zoom">Zoom</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <!-- Typography & Spacing -->
+                    <div class="config-group">
+                        <h4>📝 Typography</h4>
+                        <div class="config-item">
+                            <label>Font Size: <span class="range-value" id="font-size-value">14px</span></label>
+                            <input type="range" id="font-size" min="12" max="20" value="14" onchange="updateStyle()">
+                        </div>
+                        <div class="config-item">
+                            <label>Border Radius: <span class="range-value" id="border-radius-value">12px</span></label>
+                            <input type="range" id="border-radius" min="0" max="30" value="12" onchange="updateStyle()">
+                        </div>
+                        <div class="config-item">
+                            <label>Button Radius: <span class="range-value" id="btn-radius-value">8px</span></label>
+                            <input type="range" id="btn-radius" min="0" max="30" value="8" onchange="updateStyle()">
+                        </div>
+                    </div>
+                    
+                    <!-- Advanced Options -->
+                    <div class="config-group">
+                        <h4>⚙️ Advanced</h4>
+                        <div class="config-item">
+                            <label for="modal-layout">Preferences Layout:</label>
+                            <select id="modal-layout" onchange="updateStyle()">
+                                <option value="box">Box</option>
+                                <option value="bar">Wide</option>
+                            </select>
+                        </div>
+                        <div class="config-item">
+                            <label for="modal-position">Preferences Position:</label>
+                            <select id="modal-position" onchange="updateStyle()">
+                                <option value="center">Center</option>
+                                <option value="left">Left</option>
+                                <option value="right">Right</option>
+                            </select>
+                        </div>
+                        <div class="config-item">
+                            <label for="flip-buttons">Button Order:</label>
+                            <select id="flip-buttons" onchange="updateStyle()">
+                                <option value="false">Accept First</option>
+                                <option value="true">Reject First</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="config-actions">
+                    <button class="btn-primary btn-config" onclick="applyStyle()">
+                        ✨ Apply Style
+                    </button>
+                    <button class="btn-secondary btn-config" onclick="showCode()">
+                        📋 Show Configuration Code
+                    </button>
+                    <button class="btn-outline btn-config" onclick="resetStyle()">
+                        🔄 Reset to Default
+                    </button>
+                </div>
+                
+                <div id="code-output" class="code-output"></div>
             </div>
         </div>
         
@@ -788,6 +1045,277 @@
                 setTimeout(() => location.reload(), 1000);
             }
         }
+        
+        // ========================================
+        // Style Configurator Functions
+        // ========================================
+        
+        let currentConfig = null;
+        
+        function updateStyle() {
+            // Update range value displays
+            document.getElementById('font-size-value').textContent = 
+                document.getElementById('font-size').value + 'px';
+            document.getElementById('border-radius-value').textContent = 
+                document.getElementById('border-radius').value + 'px';
+            document.getElementById('btn-radius-value').textContent = 
+                document.getElementById('btn-radius').value + 'px';
+        }
+        
+        function getConfigFromUI() {
+            return {
+                guiOptions: {
+                    consentModal: {
+                        layout: document.getElementById('layout').value,
+                        position: document.getElementById('position').value,
+                        transition: document.getElementById('transition').value,
+                        flipButtons: document.getElementById('flip-buttons').value === 'true'
+                    },
+                    preferencesModal: {
+                        layout: document.getElementById('modal-layout').value,
+                        position: document.getElementById('modal-position').value,
+                        transition: document.getElementById('transition').value,
+                        flipButtons: document.getElementById('flip-buttons').value === 'true'
+                    }
+                },
+                styles: {
+                    primaryColor: document.getElementById('primary-color').value,
+                    backgroundColor: document.getElementById('bg-color').value,
+                    textColor: document.getElementById('text-color').value,
+                    buttonTextColor: document.getElementById('btn-text-color').value,
+                    fontSize: document.getElementById('font-size').value + 'px',
+                    borderRadius: document.getElementById('border-radius').value + 'px',
+                    buttonRadius: document.getElementById('btn-radius').value + 'px'
+                }
+            };
+        }
+        
+        function applyStyle() {
+            const config = getConfigFromUI();
+            currentConfig = config;
+            
+            // Apply custom CSS
+            applyCustomCSS(config.styles);
+            
+            // Reinitialize ConsentManager with new config
+            // Since we can't easily reinit, we'll just hide and show to demonstrate
+            ConsentManager.hidePreferences();
+            ConsentManager.hide();
+            
+            // Update GUI options by directly modifying the internal config
+            if (window.ConsentManager && window.ConsentManager.updateOptions) {
+                window.ConsentManager.updateOptions(config.guiOptions);
+            }
+            
+            logEvent('Style', 'Style configuration applied');
+            
+            // Show success message
+            showCopySuccess('Style applied! Open the consent modal to see changes.');
+            
+            // Auto-show the modal to demonstrate changes
+            setTimeout(() => {
+                ConsentManager.show();
+            }, 800);
+        }
+        
+        function applyCustomCSS(styles) {
+            // Remove existing custom style if any
+            const existingStyle = document.getElementById('custom-consent-style');
+            if (existingStyle) {
+                existingStyle.remove();
+            }
+            
+            // Create new style element
+            const styleEl = document.createElement('style');
+            styleEl.id = 'custom-consent-style';
+            styleEl.textContent = `
+                /* Custom ConsentManager Styles */
+                :root {
+                    --cm-primary-color: ${styles.primaryColor};
+                    --cm-bg-color: ${styles.backgroundColor};
+                    --cm-text-color: ${styles.textColor};
+                    --cm-btn-text-color: ${styles.buttonTextColor};
+                }
+                
+                #cm-consent-modal,
+                #cm-preferences-modal {
+                    font-size: ${styles.fontSize} !important;
+                }
+                
+                #cm-consent-modal .cm,
+                #cm-preferences-modal .cm {
+                    background-color: ${styles.backgroundColor} !important;
+                    color: ${styles.textColor} !important;
+                    border-radius: ${styles.borderRadius} !important;
+                }
+                
+                #cm-consent-modal .cm-btn,
+                #cm-preferences-modal .cm-btn {
+                    border-radius: ${styles.buttonRadius} !important;
+                }
+                
+                #cm-consent-modal .cm-btn-primary,
+                #cm-preferences-modal .cm-btn-primary,
+                #cm-consent-modal .cm-btn.cm-btn-accept,
+                #cm-preferences-modal .cm-btn.cm-btn-accept,
+                #cm-consent-modal .cm-btn.cm-btn-accept-all,
+                #cm-preferences-modal .cm-btn.cm-btn-accept-all {
+                    background-color: ${styles.primaryColor} !important;
+                    color: ${styles.buttonTextColor} !important;
+                    border-color: ${styles.primaryColor} !important;
+                }
+                
+                #cm-consent-modal .cm-btn-primary:hover,
+                #cm-preferences-modal .cm-btn-primary:hover,
+                #cm-consent-modal .cm-btn.cm-btn-accept:hover,
+                #cm-preferences-modal .cm-btn.cm-btn-accept:hover {
+                    opacity: 0.9;
+                }
+                
+                #cm-preferences-modal .cm-section-title,
+                #cm-preferences-modal .cm-toggle-label {
+                    color: ${styles.textColor} !important;
+                }
+                
+                #cm-preferences-modal .cm-toggle-input:checked + .cm-toggle-slider {
+                    background-color: ${styles.primaryColor} !important;
+                }
+                
+                #cm-consent-modal h2,
+                #cm-preferences-modal h2 {
+                    color: ${styles.textColor} !important;
+                }
+            `;
+            
+            document.head.appendChild(styleEl);
+        }
+        
+        function showCode() {
+            const config = getConfigFromUI();
+            const codeOutput = document.getElementById('code-output');
+            
+            const configCode = `// ConsentManager Configuration
+ConsentManager.run({
+    // ... your existing configuration ...
+    
+    // GUI Options
+    guiOptions: {
+        consentModal: {
+            layout: '${config.guiOptions.consentModal.layout}',
+            position: '${config.guiOptions.consentModal.position}',
+            transition: '${config.guiOptions.consentModal.transition}',
+            flipButtons: ${config.guiOptions.consentModal.flipButtons}
+        },
+        preferencesModal: {
+            layout: '${config.guiOptions.preferencesModal.layout}',
+            position: '${config.guiOptions.preferencesModal.position}',
+            transition: '${config.guiOptions.preferencesModal.transition}',
+            flipButtons: ${config.guiOptions.preferencesModal.flipButtons}
+        }
+    }
+});
+
+// Custom CSS Styles (add to your stylesheet)
+<style>
+:root {
+    --cm-primary-color: ${config.styles.primaryColor};
+    --cm-bg-color: ${config.styles.backgroundColor};
+    --cm-text-color: ${config.styles.textColor};
+}
+
+#cm-consent-modal,
+#cm-preferences-modal {
+    font-size: ${config.styles.fontSize} !important;
+}
+
+#cm-consent-modal .cm,
+#cm-preferences-modal .cm {
+    background-color: ${config.styles.backgroundColor} !important;
+    color: ${config.styles.textColor} !important;
+    border-radius: ${config.styles.borderRadius} !important;
+}
+
+#cm-consent-modal .cm-btn,
+#cm-preferences-modal .cm-btn {
+    border-radius: ${config.styles.buttonRadius} !important;
+}
+
+#cm-consent-modal .cm-btn-primary,
+#cm-preferences-modal .cm-btn-primary {
+    background-color: ${config.styles.primaryColor} !important;
+    color: ${config.styles.buttonTextColor} !important;
+}
+</style>`;
+            
+            codeOutput.textContent = configCode;
+            codeOutput.classList.add('show');
+            
+            logEvent('Style', 'Configuration code displayed');
+        }
+        
+        function resetStyle() {
+            // Reset all inputs to default values
+            document.getElementById('primary-color').value = '#667eea';
+            document.getElementById('bg-color').value = '#ffffff';
+            document.getElementById('text-color').value = '#2c3e50';
+            document.getElementById('btn-text-color').value = '#ffffff';
+            document.getElementById('layout').value = 'box';
+            document.getElementById('position').value = 'bottom';
+            document.getElementById('transition').value = 'slide';
+            document.getElementById('modal-layout').value = 'box';
+            document.getElementById('modal-position').value = 'center';
+            document.getElementById('flip-buttons').value = 'false';
+            document.getElementById('font-size').value = '14';
+            document.getElementById('border-radius').value = '12';
+            document.getElementById('btn-radius').value = '8';
+            
+            // Update displays
+            updateStyle();
+            
+            // Remove custom CSS
+            const existingStyle = document.getElementById('custom-consent-style');
+            if (existingStyle) {
+                existingStyle.remove();
+            }
+            
+            // Hide code output
+            document.getElementById('code-output').classList.remove('show');
+            
+            logEvent('Style', 'Style reset to defaults');
+            showCopySuccess('Style reset to defaults!');
+        }
+        
+        function showCopySuccess(message) {
+            const existing = document.querySelector('.copy-success');
+            if (existing) {
+                existing.remove();
+            }
+            
+            const successEl = document.createElement('div');
+            successEl.className = 'copy-success';
+            successEl.textContent = message;
+            document.body.appendChild(successEl);
+            
+            setTimeout(() => {
+                successEl.style.opacity = '0';
+                setTimeout(() => successEl.remove(), 300);
+            }, 3000);
+        }
+        
+        // Add copy functionality to code output
+        document.addEventListener('click', function(e) {
+            if (e.target.closest('#code-output')) {
+                const code = document.getElementById('code-output').textContent;
+                navigator.clipboard.writeText(code).then(() => {
+                    showCopySuccess('✅ Code copied to clipboard!');
+                }).catch(() => {
+                    showCopySuccess('⚠️ Failed to copy. Please select and copy manually.');
+                });
+            }
+        });
+        
+        // Initialize style configurator
+        updateStyle();
         
         // Initial status check
         setTimeout(refreshStatus, 500);

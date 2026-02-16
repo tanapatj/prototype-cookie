@@ -445,6 +445,26 @@ A white-box penetration test was conducted on this project. See `PENTEST_REPORT.
 - **Monthly quota enforcement** to prevent abuse
 - **HTTPS-only** communication
 - **No secrets in client-side code** -- API keys must be injected server-side
+- **DDoS protection** with multi-layered rate limiting and timeout protection
+
+### DDoS Protection (✅ Implemented)
+
+ConsentManager includes comprehensive multi-layered DDoS protection:
+
+**Application-Level Protection** (Active):
+- ✅ Per-IP rate limiting (10 req/10s authenticated, 5 req/10s unauthenticated)
+- ✅ Request size limits (50KB max)
+- ✅ Content-Type validation
+- ✅ Timeout protection (5 second max per request)
+- ✅ Enhanced error handling
+
+**Infrastructure-Level Protection** (Ready to deploy):
+- 🛡️ Google Cloud Armor with WAF
+- 🛡️ ML-based adaptive DDoS detection
+- 🛡️ OWASP ModSecurity rules (SQLi, XSS)
+- 🛡️ Layer 3/4 and Layer 7 protection
+
+See `DDOS_PROTECTION.md` for detailed implementation guide and deployment instructions.
 
 ### Security Best Practices
 
@@ -453,6 +473,7 @@ A white-box penetration test was conducted on this project. See `PENTEST_REPORT.
 - Rotate API keys periodically
 - Monitor usage patterns for anomalies
 - Review the `PENTEST_REPORT.md` for full findings and remediation status
+- Deploy Cloud Armor for production environments with high traffic
 
 ---
 
@@ -582,6 +603,8 @@ Dataset `consent_analytics` in GCP project, partitioned by date, clustered by ev
 |---|---|
 | `Readme.md` | This file -- project overview |
 | `PENTEST_REPORT.md` | Security assessment (19 findings, 7 critical/high remediated) |
+| `DDOS_PROTECTION.md` | Multi-layered DDoS protection implementation guide |
+| `DEVSECOPS_RECOMMENDATIONS.md` | Security improvements (OWASP Top 10 2025, DevSecOps) |
 | `IMPLEMENTATION_SUMMARY.md` | Full technical architecture and specifications |
 | `FRONTEND_IMPLEMENTATION_GUIDE.md` | Step-by-step frontend integration guide |
 | `DATABASE_INTEGRATION_GUIDE.md` | When and how to add BigQuery logging |

@@ -15,6 +15,50 @@ const bigquery = new BigQuery();
 const DATASET_ID = 'consent_analytics';
 const TABLE_ID = 'consent_events';
 
+// ========================================
+// DDOS PROTECTION
+// ========================================
+
+const rateLimitStore = new Map();
+const RATE_LIMIT_WINDOW = 10000; // 10 seconds
+const RATE_LIMIT_MAX_REQUESTS = 5; // 5 requests per 10 seconds (stricter for unauthenticated)
+
+function checkRateLimit(ip) {
+  if (!ip) return true;
+  
+  const now = Date.now();
+  const key = ip;
+  
+  // Clean up old entries
+  if (Math.random() < 0.01) {
+    for (const [k, v] of rateLimitStore.entries()) {
+      if (now > v.resetTime) {
+        rateLimitStore.delete(k);
+      }
+    }
+  }
+  
+  if (!rateLimitStore.has(key)) {
+    rateLimitStore.set(key, {count: 1, resetTime: now + RATE_LIMIT_WINDOW});
+    return true;
+  }
+  
+  const record = rateLimitStore.get(key);
+  
+  if (now > record.resetTime) {
+    record.count = 1;
+    record.resetTime = now + RATE_LIMIT_WINDOW;
+    return true;
+  }
+  
+  if (record.count >= RATE_LIMIT_MAX_REQUESTS) {
+    return false;
+  }
+  
+  record.count++;
+  return true;
+}
+
 /**
  * Hash IP address for privacy (GDPR compliant)
  */
@@ -157,6 +201,45 @@ exports.logConsent = async (req, res) => {
     return;
   }
   
+  // ========================================
+  // DDOS PROTECTION CHECKS
+  // ========================================
+  
+  // 1. Get client IP
+  const clientIP = req.headers['x-forwarded-for']?.split(',')[0]?.trim() 
+                || req.headers['x-real-ip'] 
+                || req.connection?.remoteAddress 
+                || req.socket?.remoteAddress
+                || 'unknown';
+  
+  // 2. Check rate limit (5 requests per 10 seconds - stricter for unauthenticated)
+  if (!checkRateLimit(clientIP)) {
+    console.warn('[DDOS] Rate limit exceeded:', clientIP);
+    return res.status(429).json({ 
+      error: 'Too many requests',
+      message: 'Rate limit exceeded. Please try again later.'
+    });
+  }
+  
+  // 3. Validate request size (max 50KB)
+  const contentLength = parseInt(req.headers['content-length'] || '0', 10);
+  if (contentLength > 51200) {
+    console.warn('[DDOS] Request too large:', contentLength, 'bytes from', clientIP);
+    return res.status(413).json({ 
+      error: 'Payload too large',
+      message: 'Request body must be less than 50KB'
+    });
+  }
+  
+  // 4. Validate Content-Type
+  const contentType = req.headers['content-type'];
+  if (!contentType || !contentType.includes('application/json')) {
+    return res.status(415).json({ 
+      error: 'Unsupported media type',
+      message: 'Content-Type must be application/json'
+    });
+  }
+  
   try {
     const data = req.body;
     
@@ -166,11 +249,7 @@ exports.logConsent = async (req, res) => {
       return;
     }
     
-    // Get client IP
-    const clientIP = req.headers['x-forwarded-for']?.split(',')[0]?.trim() 
-                  || req.headers['x-real-ip'] 
-                  || req.connection.remoteAddress 
-                  || req.socket.remoteAddress;
+    // Note: clientIP already extracted above for rate limiting
     
     // Get user agent
     const userAgent = req.headers['user-agent'] || '';
@@ -243,11 +322,17 @@ exports.logConsent = async (req, res) => {
       created_at: new Date().toISOString()
     };
     
-    // Insert into BigQuery
-    await bigquery
+    // Insert into BigQuery with timeout protection (5 seconds max)
+    const insertPromise = bigquery
       .dataset(DATASET_ID)
       .table(TABLE_ID)
       .insert([row]);
+    
+    const timeoutPromise = new Promise((_, reject) =>
+      setTimeout(() => reject(new Error('BigQuery insert timeout')), 5000)
+    );
+    
+    await Promise.race([insertPromise, timeoutPromise]);
     
     console.log(`✅ Logged consent event: ${row.event_id}`);
     
@@ -257,12 +342,22 @@ exports.logConsent = async (req, res) => {
     });
     
   } catch (error) {
-    console.error('❌ Error logging consent:', error);
+    console.error('❌ Error logging consent:', error.message || error);
     
-    // Don't expose internal errors to client
-    res.status(500).json({ 
-      error: 'Failed to log consent',
-      message: process.env.NODE_ENV === 'development' ? error.message : undefined
-    });
+    // Don't leak internal error details
+    const isDevelopment = process.env.NODE_ENV === 'development';
+    const isTimeout = error.message === 'BigQuery insert timeout';
+    
+    if (isTimeout) {
+      res.status(504).json({ 
+        error: 'Gateway timeout',
+        message: isDevelopment ? 'BigQuery insert timed out after 5 seconds' : 'Request timeout'
+      });
+    } else {
+      res.status(500).json({ 
+        error: 'Internal server error',
+        message: isDevelopment ? error.message : 'An error occurred while processing your request'
+      });
+    }
   }
 };

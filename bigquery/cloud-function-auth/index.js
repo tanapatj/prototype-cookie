@@ -22,6 +22,66 @@ const DATASET_ID = 'consent_analytics';
 const TABLE_ID = 'consent_events';
 const API_KEYS_TABLE_ID = 'api_keys';
 
+// ========================================
+// DDOS PROTECTION
+// ========================================
+
+// In-memory rate limiting (per-IP)
+const rateLimitStore = new Map();
+const RATE_LIMIT_WINDOW = 10000; // 10 seconds
+const RATE_LIMIT_MAX_REQUESTS = 10; // 10 requests per 10 seconds per IP
+
+/**
+ * Check if IP has exceeded rate limit
+ */
+function checkRateLimit(ip) {
+  if (!ip) {
+    console.log('[RATE_LIMIT] No IP provided, allowing request');
+    return true;
+  }
+  
+  const now = Date.now();
+  const key = ip;
+  
+  // Clean up old entries periodically (every 100 requests)
+  if (Math.random() < 0.01) {
+    for (const [k, v] of rateLimitStore.entries()) {
+      if (now > v.resetTime) {
+        rateLimitStore.delete(k);
+      }
+    }
+  }
+  
+  if (!rateLimitStore.has(key)) {
+    console.log(`[RATE_LIMIT] New IP: ${ip}, count: 1/${RATE_LIMIT_MAX_REQUESTS}`);
+    rateLimitStore.set(key, {
+      count: 1,
+      resetTime: now + RATE_LIMIT_WINDOW
+    });
+    return true;
+  }
+  
+  const record = rateLimitStore.get(key);
+  
+  // Reset window if expired
+  if (now > record.resetTime) {
+    console.log(`[RATE_LIMIT] Window expired for ${ip}, resetting count`);
+    record.count = 1;
+    record.resetTime = now + RATE_LIMIT_WINDOW;
+    return true;
+  }
+  
+  // Check if limit exceeded
+  if (record.count >= RATE_LIMIT_MAX_REQUESTS) {
+    console.warn(`[RATE_LIMIT] ⛔ BLOCKED: ${ip} exceeded limit (${record.count}/${RATE_LIMIT_MAX_REQUESTS})`);
+    return false;
+  }
+  
+  record.count++;
+  console.log(`[RATE_LIMIT] IP: ${ip}, count: ${record.count}/${RATE_LIMIT_MAX_REQUESTS}`);
+  return true;
+}
+
 /**
  * Validate API key and domain
  */
@@ -232,6 +292,50 @@ exports.logConsent = async (req, res) => {
     return;
   }
   
+  // ========================================
+  // DDOS PROTECTION CHECKS
+  // ========================================
+  
+  // 1. Get client IP
+  const clientIP = req.headers['x-forwarded-for']?.split(',')[0]?.trim() 
+                || req.headers['x-real-ip'] 
+                || req.connection?.remoteAddress 
+                || req.socket?.remoteAddress
+                || 'unknown';
+  
+  console.log(`[DDOS] Extracted IP: ${clientIP} from headers:`, {
+    'x-forwarded-for': req.headers['x-forwarded-for'],
+    'x-real-ip': req.headers['x-real-ip']
+  });
+  
+  // 2. Check rate limit (10 requests per 10 seconds per IP)
+  if (!checkRateLimit(clientIP)) {
+    console.warn('[DDOS] ⛔ Rate limit exceeded:', clientIP);
+    return res.status(429).json({ 
+      error: 'Too many requests',
+      message: 'Rate limit exceeded. Please try again later.'
+    });
+  }
+  
+  // 3. Validate request size (max 50KB)
+  const contentLength = parseInt(req.headers['content-length'] || '0', 10);
+  if (contentLength > 51200) {
+    console.warn('Request too large:', contentLength, 'bytes from', clientIP);
+    return res.status(413).json({ 
+      error: 'Payload too large',
+      message: 'Request body must be less than 50KB'
+    });
+  }
+  
+  // 4. Validate Content-Type
+  const contentType = req.headers['content-type'];
+  if (!contentType || !contentType.includes('application/json')) {
+    return res.status(415).json({ 
+      error: 'Unsupported media type',
+      message: 'Content-Type must be application/json'
+    });
+  }
+  
   try {
     // SECURITY: Only accept API key from header, not request body
     const apiKey = req.headers['x-api-key'];
@@ -259,11 +363,7 @@ exports.logConsent = async (req, res) => {
       return;
     }
     
-    // Get client IP
-    const clientIP = req.headers['x-forwarded-for']?.split(',')[0]?.trim() 
-                  || req.headers['x-real-ip'] 
-                  || req.connection.remoteAddress 
-                  || req.socket.remoteAddress;
+    // Note: clientIP already extracted above for rate limiting
     
     // Parse user agent
     const userAgent = req.headers['user-agent'] || '';
@@ -340,14 +440,22 @@ exports.logConsent = async (req, res) => {
       created_at: new Date().toISOString()
     };
     
-    // Insert into BigQuery
-    await bigquery
+    // Insert into BigQuery with timeout protection (5 seconds max)
+    const insertPromise = bigquery
       .dataset(DATASET_ID)
       .table(TABLE_ID)
       .insert([row]);
     
-    // Increment usage counter
-    await incrementUsage(apiKey);
+    const timeoutPromise = new Promise((_, reject) =>
+      setTimeout(() => reject(new Error('BigQuery insert timeout')), 5000)
+    );
+    
+    await Promise.race([insertPromise, timeoutPromise]);
+    
+    // Increment usage counter (non-blocking, don't await)
+    incrementUsage(apiKey).catch(err => 
+      console.warn('Failed to increment usage (non-critical):', err.message)
+    );
     
     console.log(`✅ Logged event: ${row.event_id} (client: ${validation.clientName})`);
     
@@ -359,11 +467,22 @@ exports.logConsent = async (req, res) => {
     });
     
   } catch (error) {
-    console.error('❌ Error logging consent:', error);
+    console.error('❌ Error logging consent:', error.message || error);
     
-    res.status(500).json({ 
-      error: 'Failed to log consent',
-      message: process.env.NODE_ENV === 'development' ? error.message : undefined
-    });
+    // Don't leak internal error details
+    const isDevelopment = process.env.NODE_ENV === 'development';
+    const isTimeout = error.message === 'BigQuery insert timeout';
+    
+    if (isTimeout) {
+      res.status(504).json({ 
+        error: 'Gateway timeout',
+        message: isDevelopment ? 'BigQuery insert timed out after 5 seconds' : 'Request timeout'
+      });
+    } else {
+      res.status(500).json({ 
+        error: 'Internal server error',
+        message: isDevelopment ? error.message : 'An error occurred while processing your request'
+      });
+    }
   }
 };
