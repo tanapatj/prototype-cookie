@@ -803,7 +803,8 @@
     
     <!-- Initialize ConsentManager -->
     <script>
-        ConsentManager.run({
+        // Store base configuration for reinitialization
+        let baseConfig = {
             categories: {
                 necessary: {
                     readOnly: true,
@@ -887,7 +888,24 @@
                     }
                 }
             }
-        });
+        };
+        
+        // Initialize ConsentManager with base config
+        ConsentManager.run(baseConfig);
+        
+        // Function to reinitialize ConsentManager with new guiOptions
+        function reinitializeConsentManager(guiOptions) {
+            // Merge new guiOptions with base config
+            const newConfig = {
+                ...baseConfig,
+                guiOptions: guiOptions
+            };
+            
+            // Reinitialize
+            ConsentManager.run(newConfig);
+            
+            console.log('ConsentManager reinitialized with new guiOptions:', guiOptions);
+        }
         
         // Event listeners (with BigQuery logging)
         window.addEventListener('cm:onConsent', function({detail}) {
@@ -1097,25 +1115,18 @@
             // Apply custom CSS
             applyCustomCSS(config.styles);
             
-            // Reinitialize ConsentManager with new config
-            // Since we can't easily reinit, we'll just hide and show to demonstrate
-            ConsentManager.hidePreferences();
-            ConsentManager.hide();
+            // Reinitialize ConsentManager with new guiOptions
+            reinitializeConsentManager(config.guiOptions);
             
-            // Update GUI options by directly modifying the internal config
-            if (window.ConsentManager && window.ConsentManager.updateOptions) {
-                window.ConsentManager.updateOptions(config.guiOptions);
-            }
-            
-            logEvent('Style', 'Style configuration applied');
+            logEvent('Style', 'Style configuration applied - ConsentManager reinitialized');
             
             // Show success message
-            showCopySuccess('Style applied! Open the consent modal to see changes.');
+            showCopySuccess('✨ Style applied! Opening consent modal...');
             
             // Auto-show the modal to demonstrate changes
             setTimeout(() => {
                 ConsentManager.show();
-            }, 800);
+            }, 500);
         }
         
         function applyCustomCSS(styles) {
@@ -1278,11 +1289,14 @@ ConsentManager.run({
                 existingStyle.remove();
             }
             
+            // Reinitialize with base config (no custom guiOptions)
+            ConsentManager.run(baseConfig);
+            
             // Hide code output
             document.getElementById('code-output').classList.remove('show');
             
-            logEvent('Style', 'Style reset to defaults');
-            showCopySuccess('Style reset to defaults!');
+            logEvent('Style', 'Style reset to defaults - ConsentManager reinitialized');
+            showCopySuccess('✅ Style reset to defaults!');
         }
         
         function showCopySuccess(message) {
