@@ -895,16 +895,18 @@
         
         // Function to reinitialize ConsentManager with new guiOptions
         function reinitializeConsentManager(guiOptions) {
-            // Merge new guiOptions with base config
-            const newConfig = {
-                ...baseConfig,
-                guiOptions: guiOptions
-            };
+            // ConsentManager.run() only executes once (checks window._cmRun).
+            // We must call reset() first to tear down the old modals and
+            // set _cmRun = false, then call run() again with the new config.
+            // reset() without arguments preserves the user's consent cookie.
+            ConsentManager.reset();
             
-            // Reinitialize
+            const newConfig = JSON.parse(JSON.stringify(baseConfig));
+            newConfig.guiOptions = guiOptions;
+            
             ConsentManager.run(newConfig);
             
-            console.log('ConsentManager reinitialized with new guiOptions:', guiOptions);
+            console.log('ConsentManager reinitialized with guiOptions:', guiOptions);
         }
         
         // Event listeners (with BigQuery logging)
@@ -1290,7 +1292,8 @@ ConsentManager.run({
             }
             
             // Reinitialize with base config (no custom guiOptions)
-            ConsentManager.run(baseConfig);
+            ConsentManager.reset();
+            ConsentManager.run(JSON.parse(JSON.stringify(baseConfig)));
             
             // Hide code output
             document.getElementById('code-output').classList.remove('show');
