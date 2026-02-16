@@ -1118,8 +1118,8 @@
             
             console.log('Applying style with config:', config);
             
-            // Apply custom CSS
-            applyCustomCSS(config.styles);
+            // Apply custom CSS (pass layout for bar-specific CSS)
+            applyCustomCSS(config.styles, config.guiOptions.consentModal.layout);
             
             // Reinitialize ConsentManager with new guiOptions
             reinitializeConsentManager(config.guiOptions);
@@ -1135,15 +1135,68 @@
             }, 500);
         }
         
-        function applyCustomCSS(styles) {
+        function applyCustomCSS(styles, layout) {
             // Remove existing custom style if any
             const existingStyle = document.getElementById('custom-consent-style');
             if (existingStyle) {
                 existingStyle.remove();
             }
             
-            // The library uses CSS custom properties on :root
-            // We override them on #cm-main for higher specificity
+            // For bar layout, make it truly full-width with content spread out nicely
+            const barLayoutCSS = layout === 'bar' ? `
+                /* Make bar layout truly full-width */
+                #cm-main .cm--bar {
+                    max-width: none !important;
+                    width: 100% !important;
+                    left: 0 !important;
+                    right: 0 !important;
+                    margin: 0 !important;
+                    border-radius: 0 !important;
+                }
+                
+                /* Horizontal layout on desktop */
+                @media screen and (min-width: 768px) {
+                    #cm-main .cm--bar .cm__body {
+                        flex-direction: row !important;
+                        align-items: center !important;
+                        max-width: 1400px;
+                        margin: 0 auto;
+                        padding: 1.2rem 2rem !important;
+                        gap: 2rem;
+                    }
+                    
+                    #cm-main .cm--bar .cm__texts {
+                        flex: 1 !important;
+                        padding: 0 !important;
+                    }
+                    
+                    #cm-main .cm--bar .cm__desc,
+                    #cm-main .cm--bar .cm__title {
+                        padding: 0 !important;
+                        max-height: none !important;
+                    }
+                    
+                    #cm-main .cm--bar .cm__btns {
+                        flex-shrink: 0 !important;
+                        padding: 0 !important;
+                        border: none !important;
+                        display: flex !important;
+                        flex-direction: row !important;
+                        gap: 0.5rem;
+                    }
+                    
+                    #cm-main .cm--bar .cm__btn-group {
+                        display: flex !important;
+                        flex-direction: row !important;
+                        gap: 0.5rem;
+                    }
+                    
+                    #cm-main .cm--bar .cm__btn {
+                        min-width: 120px;
+                    }
+                }
+            ` : '';
+            
             const styleEl = document.createElement('style');
             styleEl.id = 'custom-consent-style';
             styleEl.textContent = `
@@ -1182,6 +1235,8 @@
                 #cm-main .pm__btn:hover {
                     opacity: 0.85;
                 }
+                
+                ${barLayoutCSS}
             `;
             
             document.head.appendChild(styleEl);
