@@ -624,6 +624,6 @@ Distributed under the **MIT License**. See [LICENSE](LICENSE) for details.
 
 ## Contact
 
-- **Team:** Data Engineering @ Conicle AI
-- **Email:** admin@conicle.ai
+- **Team:** AI Tech Capabilities @ Conicle
+- **Email:** tanapatj@conicle.com
 - **GitHub:** [github.com/tanapatj/prototype-cookie](https://github.com/tanapatj/prototype-cookie)
