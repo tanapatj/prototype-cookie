@@ -68,7 +68,7 @@ The customer tells Conicle which domain(s) they want to use ConsentManager on.
 
 ### Option B: Direct Request (Email)
 
-Customer emails **tanapatj@conicle.com** with:
+Customer emails **data@conicle.com** with:
 - Company name
 - Domain(s) to whitelist
 - Contact email
@@ -129,7 +129,7 @@ Your ConsentManager API key is ready:
 API Key: cm_a1b2c3d4e5f6...
 
 Integration guide: see attached code below.
-For help, email tanapatj@conicle.com
+For help, email data@conicle.com
 ```
 
 ---
@@ -414,7 +414,7 @@ Retention policy is defined in `bigquery/auto-delete-old-data.sql`.
 ### Contact
 
 - **Team:** AI Tech Capabilities @ Conicle
-- **Email:** tanapatj@conicle.com
+- **Email:** data@conicle.com
 
 ---
 
