@@ -436,7 +436,7 @@
 
             <div class="google-signin-wrapper">
                 <div id="g_id_onload"
-                     data-client_id="YOUR_GOOGLE_CLIENT_ID"
+                     data-client_id="432726793086-l9mht7ev5jqpg8c8ob6v2gkjb3teajiv.apps.googleusercontent.com"
                      data-context="signin"
                      data-ux_mode="popup"
                      data-callback="handleCredentialResponse"
@@ -680,16 +680,13 @@ LIMIT 20;</pre>
     <script>
         // ── Configuration ──────────────────────────────────────────────────
         const ADMIN_FUNCTION_URL = 'https://adminkeymanager-pxoxh5sfqa-as.a.run.app';
-        const GOOGLE_CLIENT_ID   = 'YOUR_GOOGLE_CLIENT_ID'; // Replace with your OAuth Client ID
+        const GOOGLE_CLIENT_ID   = '432726793086-l9mht7ev5jqpg8c8ob6v2gkjb3teajiv.apps.googleusercontent.com';
 
         // ── State ──────────────────────────────────────────────────────────
         let currentToken = null;
         let currentUser  = null;
 
-        // ── Setup Banner ───────────────────────────────────────────────────
-        if (GOOGLE_CLIENT_ID === 'YOUR_GOOGLE_CLIENT_ID') {
-            document.getElementById('setup-banner').style.display = 'block';
-        }
+        // Setup banner not needed — Client ID is configured
 
         // ── Google Sign-In callback ────────────────────────────────────────
         function handleCredentialResponse(response) {
