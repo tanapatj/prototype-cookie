@@ -510,6 +510,7 @@
                 <!-- ── Tab 1: Generate ─────────────────────────────────────── -->
                 <div id="tab-generate" class="tab-content active">
                     <h2>🔑 Generate New API Key</h2>
+                    <p id="logged-in-email-line" style="font-size:0.875rem; color:#6b7280; margin-bottom:1rem;"></p>
 
                     <div id="alert-generate"></div>
 
@@ -537,20 +538,21 @@
                         <div class="form-grid">
                             <div class="form-group">
                                 <label for="quota">Monthly Quota (Events)</label>
-                                <input type="number" id="quota" placeholder="Leave blank for unlimited" min="1">
-                                <div class="help-text">Max events per month</div>
+                                <input type="number" id="quota" value="400000" placeholder="Leave blank for unlimited" min="1">
+                                <div class="help-text">Max events per month (default: 400,000)</div>
                             </div>
 
                             <div class="form-group">
                                 <label for="expires">Expiration Date</label>
                                 <input type="date" id="expires">
-                                <div class="help-text">Leave blank = never expires</div>
+                                <div class="help-text">Default: 1 year from today. Leave blank = never expires</div>
                             </div>
                         </div>
 
                         <div class="form-group">
                             <label for="notes">Internal Notes</label>
-                            <textarea id="notes" rows="2" placeholder="Any internal notes..." maxlength="500"></textarea>
+                            <textarea id="notes" rows="3" placeholder="Auto-filled from form + logged-in email" maxlength="500"></textarea>
+                            <div class="help-text">Auto-filled with Client, Domains, Quota, Expiry, and your email</div>
                         </div>
 
                         <button type="submit" class="btn btn-primary" id="generate-btn">
@@ -727,14 +729,52 @@ LIMIT 20;</pre>
             document.getElementById('user-name').textContent  = currentUser.name || currentUser.email;
             document.getElementById('user-email').textContent = currentUser.email;
 
+            // Logged-in email line on Generate tab
+            document.getElementById('logged-in-email-line').textContent =
+                'Logged in as: ' + (currentUser.email || '');
+
             const avatarWrapper = document.getElementById('user-avatar-wrapper');
             if (currentUser.picture) {
                 avatarWrapper.innerHTML = `<img src="${currentUser.picture}" class="user-avatar" alt="avatar" referrerpolicy="no-referrer">`;
             }
 
+            // Default expiry: +1 year from today
+            const nextYear = new Date();
+            nextYear.setFullYear(nextYear.getFullYear() + 1);
+            document.getElementById('expires').value = nextYear.toISOString().slice(0, 10);
+
+            // Wire up notes auto-fill from form fields
+            ['client-name', 'domains', 'quota', 'expires'].forEach(function(id) {
+                const el = document.getElementById(id);
+                if (el) {
+                    el.addEventListener('input', updateNotesFromForm);
+                    el.addEventListener('change', updateNotesFromForm);
+                }
+            });
+            updateNotesFromForm();
+
             // Load stats + key list
             loadStats();
             loadKeys();
+        }
+
+        function updateNotesFromForm() {
+            const clientName = (document.getElementById('client-name') && document.getElementById('client-name').value.trim()) || '';
+            const domainsText = (document.getElementById('domains') && document.getElementById('domains').value) || '';
+            const quota = (document.getElementById('quota') && document.getElementById('quota').value) || '400000';
+            const expires = (document.getElementById('expires') && document.getElementById('expires').value) || '';
+            const domains = domainsText.split('\n').map(function(d) { return d.trim(); }).filter(Boolean);
+            const email = (currentUser && currentUser.email) || '';
+
+            const parts = [];
+            if (clientName) parts.push('Client: ' + clientName);
+            if (domains.length) parts.push('Domains: ' + domains.join(', '));
+            parts.push('Monthly Quota: ' + (quota || 'unlimited'));
+            parts.push('Expires: ' + (expires || 'never'));
+            if (email) parts.push('Created by: ' + email);
+
+            const notesEl = document.getElementById('notes');
+            if (notesEl) notesEl.value = parts.join('. ');
         }
 
         function signOut() {
@@ -797,13 +837,16 @@ LIMIT 20;</pre>
             const domainsText = document.getElementById('domains').value;
             const quota       = document.getElementById('quota').value;
             const expiresAt   = document.getElementById('expires').value;
-            const notes       = document.getElementById('notes').value.trim();
 
             const domains = domainsText.split('\n').map(d => d.trim()).filter(Boolean);
             if (domains.length === 0) {
                 showAlert('alert-generate', 'Please enter at least one domain.', 'error');
                 return;
             }
+
+            // Build internal notes: Client + Domains + Quota + Expiry + Logged-in email
+            updateNotesFromForm();
+            const notes = document.getElementById('notes').value.trim();
 
             const btn = document.getElementById('generate-btn');
             btn.disabled = true;
@@ -822,6 +865,11 @@ LIMIT 20;</pre>
 
                 showKeyResult(data.apiKey, clientName, domains);
                 document.getElementById('generate-form').reset();
+                document.getElementById('quota').value = '400000';
+                const nextYear = new Date();
+                nextYear.setFullYear(nextYear.getFullYear() + 1);
+                document.getElementById('expires').value = nextYear.toISOString().slice(0, 10);
+                updateNotesFromForm();
                 showAlert('alert-generate', `✅ API key for <strong>${escapeHtml(clientName)}</strong> was generated and saved to BigQuery automatically.`, 'success');
 
                 // Refresh stats

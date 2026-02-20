@@ -136,72 +136,9 @@ For help, email data@conicle.com
 
 ## Step 3 — Customer Integrates ConsentManager
 
-The customer's developer adds ConsentManager to their website.
+The customer's developer adds ConsentManager to their website. **An API key from the admin is required** for production use (consent logging to BigQuery).
 
-### 3.1 Minimum Setup (No Analytics — Free)
-
-Add these 3 lines to every HTML page. **No API key needed.**
-
-```html
-<!DOCTYPE html>
-<html>
-<head>
-    <!-- Step 1: Add CSS in <head> -->
-    <link rel="stylesheet"
-          href="https://storage.googleapis.com/consent-manager-cdn-tanapatj-jkt/v1.0.0/consent-manager.css">
-</head>
-<body>
-
-    <!-- Your website content here -->
-
-    <!-- Step 2: Add JS before </body> -->
-    <script src="https://storage.googleapis.com/consent-manager-cdn-tanapatj-jkt/v1.0.0/consent-manager.umd.js"></script>
-
-    <!-- Step 3: Initialize -->
-    <script>
-    ConsentManager.run({
-        categories: {
-            necessary: { readOnly: true, enabled: true },
-            analytics: {},
-            marketing: {}
-        },
-        language: {
-            default: 'en',
-            translations: {
-                en: {
-                    consentModal: {
-                        title: 'We use cookies',
-                        description: 'This website uses cookies to improve your browsing experience.',
-                        acceptAllBtn: 'Accept all',
-                        acceptNecessaryBtn: 'Reject all',
-                        showPreferencesBtn: 'Manage preferences'
-                    },
-                    preferencesModal: {
-                        title: 'Cookie Preferences',
-                        acceptAllBtn: 'Accept all',
-                        acceptNecessaryBtn: 'Reject all',
-                        savePreferencesBtn: 'Save preferences',
-                        closeIconLabel: 'Close',
-                        sections: [
-                            { title: 'Strictly Necessary', linkedCategory: 'necessary' },
-                            { title: 'Analytics Cookies', linkedCategory: 'analytics' },
-                            { title: 'Marketing Cookies', linkedCategory: 'marketing' }
-                        ]
-                    }
-                }
-            }
-        }
-    });
-    </script>
-</body>
-</html>
-```
-
-The consent banner appears automatically. User preferences are stored in the browser cookie (`cm_cookie`). **This alone is GDPR/PDPA compliant.**
-
----
-
-### 3.2 Block Tracking Scripts (GDPR Requirement)
+### 3.1 Block Tracking Scripts (GDPR Requirement)
 
 Tracking scripts (Google Analytics, Facebook Pixel, etc.) **must not run until the user consents**.
 
@@ -225,9 +162,9 @@ Tracking scripts (Google Analytics, Facebook Pixel, etc.) **must not run until t
 
 ---
 
-### 3.3 Add BigQuery Analytics Logging (Optional, Requires API Key)
+### 3.2 Add ConsentManager + BigQuery Logging (Requires API Key)
 
-To stream consent events to BigQuery, add an event listener after your `ConsentManager.run()` call:
+Add the library (CSS + JS in your HTML), initialize with `ConsentManager.run({ ... })`, then add the logging code below so consent events stream to BigQuery. Use the API key sent to you by the admin.
 
 ```html
 <script>
@@ -267,7 +204,7 @@ window.addEventListener('cm:onChange',       ({ detail }) => logConsentEvent('ch
 
 ---
 
-### 3.4 Thai Language Support
+### 3.3 Thai Language Support
 
 ```javascript
 ConsentManager.run({
