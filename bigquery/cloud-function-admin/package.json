@@ -1,0 +1,12 @@
+{
+  "name": "consent-manager-admin",
+  "version": "1.0.0",
+  "description": "Admin API key management Cloud Function for ConsentManager",
+  "main": "index.js",
+  "engines": {
+    "node": ">=20"
+  },
+  "dependencies": {
+    "@google-cloud/bigquery": "^7.3.0"
+  }
+}
