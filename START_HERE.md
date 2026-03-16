@@ -54,7 +54,7 @@ The customer tells Conicle which domain(s) they want to use ConsentManager on.
 
 ### Option A: Customer Portal (Self-Service)
 
-> **URL:** https://storage.googleapis.com/consent-manager-cdn-tanapatj-jkt/customer.html
+> **URL:** https://cookies.conicle.com/customer.html
 
 1. Customer opens the Customer Portal
 2. Fills in the form:
@@ -82,7 +82,7 @@ The admin receives the request and proceeds to **Step 2**.
 
 ## Step 2 — Admin Reviews & Generates API Key
 
-> **Admin Portal:** https://storage.googleapis.com/consent-manager-cdn-tanapatj-jkt/admin.html  
+> **Admin Portal:** https://cookies.conicle.com/admin.html  
 > **Requires:** `@conicle.com` Google account
 
 ### 2.1 Sign In
@@ -171,7 +171,7 @@ Add the library (CSS + JS in your HTML), initialize with `ConsentManager.run({ .
 ConsentManager.run({ /* ... your config ... */ });
 
 // BigQuery logging (requires API key from Conicle admin)
-const CM_LOG_URL = 'https://logconsentauth-pxoxh5sfqa-as.a.run.app';
+const CM_LOG_URL = 'https://logconsentauth-rcpavhoe7a-as.a.run.app';
 const CM_API_KEY = 'cm_your_api_key_here'; // Replace with your actual API key
 
 function logConsentEvent(eventName, detail) {
@@ -265,8 +265,8 @@ Every time a user interacts with the consent banner, one row is written to `cons
 
 ### View in BigQuery
 
-1. Open [BigQuery Console](https://console.cloud.google.com/bigquery?project=conicle-ai-dev)
-2. Navigate to `conicle-ai-dev` → `consent_analytics` → `consent_events`
+1. Open [BigQuery Console](https://console.cloud.google.com/bigquery?project=cookiemanager-488405)
+2. Navigate to `cookiemanager-488405` → `consent_analytics` → `consent_events`
 3. Run a quick check:
 
 ```sql
@@ -275,7 +275,7 @@ SELECT
   accept_type,
   COUNT(*) AS total,
   DATE(event_timestamp) AS date
-FROM `conicle-ai-dev.consent_analytics.consent_events`
+FROM `cookiemanager-488405.consent_analytics.consent_events`
 WHERE DATE(event_timestamp) = CURRENT_DATE()
 GROUP BY client_name, accept_type, date
 ORDER BY total DESC;
@@ -327,26 +327,26 @@ Retention policy is defined in `bigquery/auto-delete-old-data.sql`.
 
 | Resource | URL |
 |----------|-----|
-| **Live Demo** | https://storage.googleapis.com/consent-manager-cdn-tanapatj-jkt/index.html |
-| **Admin Portal** | https://storage.googleapis.com/consent-manager-cdn-tanapatj-jkt/admin.html |
-| **Customer Portal** | https://storage.googleapis.com/consent-manager-cdn-tanapatj-jkt/customer.html |
+| **Live Demo** | https://cookies.conicle.com/index.html |
+| **Admin Portal** | https://cookies.conicle.com/admin.html |
+| **Customer Portal** | https://cookies.conicle.com/customer.html |
 | **GitHub** | https://github.com/tanapatj/prototype-cookie |
-| **BigQuery Console** | https://console.cloud.google.com/bigquery?project=conicle-ai-dev |
+| **BigQuery Console** | https://console.cloud.google.com/bigquery?project=cookiemanager-488405 |
 
 ### CDN Assets (for customer websites)
 
 | Asset | URL |
 |-------|-----|
-| JavaScript (UMD) | `https://storage.googleapis.com/consent-manager-cdn-tanapatj-jkt/v1.0.0/consent-manager.umd.js` |
-| JavaScript (ESM) | `https://storage.googleapis.com/consent-manager-cdn-tanapatj-jkt/v1.0.0/consent-manager.esm.js` |
-| CSS | `https://storage.googleapis.com/consent-manager-cdn-tanapatj-jkt/v1.0.0/consent-manager.css` |
+| JavaScript (UMD) | `https://cookies.conicle.com/v1.0.0/consent-manager.umd.js` |
+| JavaScript (ESM) | `https://cookies.conicle.com/v1.0.0/consent-manager.esm.js` |
+| CSS | `https://cookies.conicle.com/v1.0.0/consent-manager.css` |
 
 ### Cloud Functions
 
 | Function | URL | Purpose |
 |----------|-----|---------|
-| `logConsentAuth` | `https://logconsentauth-pxoxh5sfqa-as.a.run.app` | Log consent events (authenticated) |
-| `adminKeyManager` | `https://adminkeymanager-pxoxh5sfqa-as.a.run.app` | Admin: generate / list / revoke keys |
+| `logConsentAuth` | `https://logconsentauth-rcpavhoe7a-as.a.run.app` | Log consent events (authenticated) |
+| `adminKeyManager` | `https://adminkeymanager-rcpavhoe7a-as.a.run.app` | Admin: generate / list / revoke keys |
 
 ### Contact
 
@@ -376,7 +376,7 @@ A: ~$1/month for up to 15M events. See the Cost section in `Readme.md`.
 A: The Cloud Function returns HTTP 401. Events stop logging. Generate a new key and send it to the customer.
 
 **Q: Can I customize the banner appearance?**  
-A: Yes. See the [Live Demo](https://storage.googleapis.com/consent-manager-cdn-tanapatj-jkt/index.html) for the interactive style configurator, or read `FRONTEND_IMPLEMENTATION_GUIDE.md`.
+A: Yes. See the [Live Demo](https://cookies.conicle.com/index.html) for the interactive style configurator, or read `FRONTEND_IMPLEMENTATION_GUIDE.md`.
 
 **Q: How do I add Google Analytics in a compliant way?**  
 A: See `GOOGLE_ANALYTICS_INTEGRATION.md` for a complete guide.

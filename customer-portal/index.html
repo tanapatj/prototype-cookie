@@ -442,11 +442,11 @@ ${formData.domains.map(d => `  • ${d}`).join('\n')}
 
 Add this code to your website:
 
-<script src="https://storage.googleapis.com/consent-manager-cdn-tanapatj-jkt/consent-manager.js"></script>
+<script src="https://storage.googleapis.com/consentmanager/consent-manager.js"></script>
 
 <script>
 const BIGQUERY_API_KEY = '${apiKey}';
-const BIGQUERY_LOG_URL = 'https://logconsentauth-pxoxh5sfqa-as.a.run.app';
+const BIGQUERY_LOG_URL = 'https://logconsentauth-rcpavhoe7a-as.a.run.app';
 
 async function logToBigQuery(eventType, eventData) {
   await fetch(BIGQUERY_LOG_URL, {
@@ -477,7 +477,7 @@ Full documentation: https://github.com/tanapatj/prototype-cookie
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 View your consent analytics in BigQuery:
-https://console.cloud.google.com/bigquery?project=conicle-ai-dev
+https://console.cloud.google.com/bigquery?project=cookiemanager-488405
 
 Need help? Reply to this email or contact admin@conicle.ai
 

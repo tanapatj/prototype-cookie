@@ -429,7 +429,7 @@
             <div id="setup-banner">
                 <strong>⚙️ One-time setup required</strong>
                 Replace <code>YOUR_GOOGLE_CLIENT_ID</code> in this file with your OAuth Client ID.<br>
-                <a href="https://console.cloud.google.com/apis/credentials?project=conicle-ai-dev" target="_blank">
+                <a href="https://console.cloud.google.com/apis/credentials?project=cookiemanager-488405" target="_blank">
                     → Get it from Google Cloud Console
                 </a>
             </div>
@@ -606,7 +606,7 @@
                         For full analytics dashboards, open BigQuery and run the queries in
                         <code>bigquery/example-queries.sql</code>.
                         <br><br>
-                        <a href="https://console.cloud.google.com/bigquery?project=conicle-ai-dev"
+                        <a href="https://console.cloud.google.com/bigquery?project=cookiemanager-488405"
                            target="_blank" style="font-weight:600; color:#1e40af;">
                             Open BigQuery Console →
                         </a>
@@ -622,8 +622,8 @@
   COUNT(e.event_id) AS events_this_month,
   k.monthly_quota,
   k.current_month_usage
-FROM `conicle-ai-dev.consent_analytics.api_keys` k
-LEFT JOIN `conicle-ai-dev.consent_analytics.consent_events` e
+FROM `cookiemanager-488405.consent_analytics.api_keys` k
+LEFT JOIN `cookiemanager-488405.consent_analytics.consent_events` e
   ON k.api_key = e.api_key
   AND DATE(e.event_timestamp) >= DATE_TRUNC(CURRENT_DATE(), MONTH)
 WHERE k.is_active = TRUE
@@ -640,7 +640,7 @@ ORDER BY events_this_month DESC;</pre>
   COUNTIF(accept_type = 'necessary') AS rejected_all,
   COUNTIF(accept_type = 'custom')    AS custom,
   COUNT(*) AS total
-FROM `conicle-ai-dev.consent_analytics.consent_events`
+FROM `cookiemanager-488405.consent_analytics.consent_events`
 WHERE DATE(event_timestamp) >= DATE_SUB(CURRENT_DATE(), INTERVAL 30 DAY)
 GROUP BY date, client_name
 ORDER BY date DESC, total DESC;</pre>
@@ -652,7 +652,7 @@ ORDER BY date DESC, total DESC;</pre>
   device_type,
   browser_name,
   COUNT(*) AS events
-FROM `conicle-ai-dev.consent_analytics.consent_events`
+FROM `cookiemanager-488405.consent_analytics.consent_events`
 WHERE DATE(event_timestamp) >= DATE_TRUNC(CURRENT_DATE(), MONTH)
 GROUP BY device_type, browser_name
 ORDER BY events DESC
@@ -681,7 +681,7 @@ LIMIT 20;</pre>
 
     <script>
         // ── Configuration ──────────────────────────────────────────────────
-        const ADMIN_FUNCTION_URL = 'https://adminkeymanager-pxoxh5sfqa-as.a.run.app';
+        const ADMIN_FUNCTION_URL = 'https://adminkeymanager-rcpavhoe7a-as.a.run.app';
         const GOOGLE_CLIENT_ID   = '432726793086-l9mht7ev5jqpg8c8ob6v2gkjb3teajiv.apps.googleusercontent.com';
 
         // ── State ──────────────────────────────────────────────────────────
@@ -738,10 +738,14 @@ LIMIT 20;</pre>
                 avatarWrapper.innerHTML = `<img src="${currentUser.picture}" class="user-avatar" alt="avatar" referrerpolicy="no-referrer">`;
             }
 
-            // Default expiry: +1 year from today
+            // Prefilled defaults: quota 400000, expiry +1 year
+            const quotaEl = document.getElementById('quota');
+            if (quotaEl) quotaEl.value = '400000';
+
             const nextYear = new Date();
             nextYear.setFullYear(nextYear.getFullYear() + 1);
-            document.getElementById('expires').value = nextYear.toISOString().slice(0, 10);
+            const expiresEl = document.getElementById('expires');
+            if (expiresEl) expiresEl.value = nextYear.toISOString().slice(0, 10);
 
             // Wire up notes auto-fill from form fields
             ['client-name', 'domains', 'quota', 'expires'].forEach(function(id) {
@@ -887,7 +891,7 @@ LIMIT 20;</pre>
             const integrationCode =
 `// ConsentManager BigQuery logging for ${clientName}
 window.addEventListener('cm:onFirstConsent', async ({ detail }) => {
-  await fetch('https://logconsentauth-pxoxh5sfqa-as.a.run.app', {
+  await fetch('https://logconsentauth-rcpavhoe7a-as.a.run.app', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
