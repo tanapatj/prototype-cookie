@@ -10,7 +10,7 @@
 
 ### Demo URL:
 ```
-https://storage.googleapis.com/consent-manager-cdn-tanapatj-jkt/index.html
+https://storage.googleapis.com/consentmanager/index.html
 ```
 
 **What's included in the demo:**
@@ -39,31 +39,31 @@ https://storage.googleapis.com/consent-manager-cdn-tanapatj-jkt/index.html
 
 **JavaScript (UMD):**
 ```
-https://storage.googleapis.com/consent-manager-cdn-tanapatj-jkt/v1.0.0/consent-manager.umd.js
+https://storage.googleapis.com/consentmanager/v1.0.0/consent-manager.umd.js
 ```
 
 **CSS:**
 ```
-https://storage.googleapis.com/consent-manager-cdn-tanapatj-jkt/v1.0.0/consent-manager.css
+https://storage.googleapis.com/consentmanager/v1.0.0/consent-manager.css
 ```
 
 ### ES Modules (For Modern Frameworks):
 
 **JavaScript (ESM):**
 ```
-https://storage.googleapis.com/consent-manager-cdn-tanapatj-jkt/v1.0.0/consent-manager.esm.js
+https://storage.googleapis.com/consentmanager/v1.0.0/consent-manager.esm.js
 ```
 
 ### Core Library (No GUI):
 
 **Core JavaScript (UMD):**
 ```
-https://storage.googleapis.com/consent-manager-cdn-tanapatj-jkt/v1.0.0/core/consent-manager-core.umd.js
+https://storage.googleapis.com/consentmanager/v1.0.0/core/consent-manager-core.umd.js
 ```
 
 **Core JavaScript (ESM):**
 ```
-https://storage.googleapis.com/consent-manager-cdn-tanapatj-jkt/v1.0.0/core/consent-manager-core.esm.js
+https://storage.googleapis.com/consentmanager/v1.0.0/core/consent-manager-core.esm.js
 ```
 
 ---
@@ -72,8 +72,8 @@ https://storage.googleapis.com/consent-manager-cdn-tanapatj-jkt/v1.0.0/core/cons
 
 | Aspect | Details |
 |--------|---------|
-| **GCP Project** | conicle-ai-dev |
-| **Bucket Name** | consent-manager-cdn-tanapatj-jkt |
+| **GCP Project** | cookiemanager-488405 |
+| **Bucket Name** | consentmanager |
 | **Region** | asia-southeast3 (Bangkok 🇹🇭) |
 | **Access** | Public (AllUsers:R) |
 | **CORS** | Enabled for all origins |
@@ -146,11 +146,11 @@ All documentation is included in the repository:
 
 **Send them this:**
 
-1. **Demo URL:** https://storage.googleapis.com/consent-manager-cdn-tanapatj-jkt/index.html
+1. **Demo URL:** https://storage.googleapis.com/consentmanager/index.html
 2. **Implementation Guide:** `FRONTEND_IMPLEMENTATION_GUIDE.md`
 3. **Two CDN URLs:**
-   - JS: https://storage.googleapis.com/consent-manager-cdn-tanapatj-jkt/v1.0.0/consent-manager.umd.js
-   - CSS: https://storage.googleapis.com/consent-manager-cdn-tanapatj-jkt/v1.0.0/consent-manager.css
+   - JS: https://storage.googleapis.com/consentmanager/v1.0.0/consent-manager.umd.js
+   - CSS: https://storage.googleapis.com/consentmanager/v1.0.0/consent-manager.css
 
 **They need to:**
 
@@ -312,13 +312,13 @@ ConsentManager.run({
 
 **To test the demo:**
 ```
-https://storage.googleapis.com/consent-manager-cdn-tanapatj-jkt/index.html
+https://storage.googleapis.com/consentmanager/index.html
 ```
 
 **To integrate (HTML):**
 ```html
-<link rel="stylesheet" href="https://storage.googleapis.com/consent-manager-cdn-tanapatj-jkt/v1.0.0/consent-manager.css">
-<script src="https://storage.googleapis.com/consent-manager-cdn-tanapatj-jkt/v1.0.0/consent-manager.umd.js"></script>
+<link rel="stylesheet" href="https://storage.googleapis.com/consentmanager/v1.0.0/consent-manager.css">
+<script src="https://storage.googleapis.com/consentmanager/v1.0.0/consent-manager.umd.js"></script>
 <script>
 ConsentManager.run({
     categories: {

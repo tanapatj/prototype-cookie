@@ -87,7 +87,7 @@ Quota Verification
 **Valid Request:**
 ```bash
 curl -H "X-API-Key: demo-key-12345..." \
-  https://logconsentauth-pxoxh5sfqa-as.a.run.app
+  https://logconsentauth-rcpavhoe7a-as.a.run.app
   
 Response: {"success": true, "client": "Demo Client"}
 ```
@@ -95,7 +95,7 @@ Response: {"success": true, "client": "Demo Client"}
 **Invalid Request:**
 ```bash
 curl -H "X-API-Key: invalid-key" \
-  https://logconsentauth-pxoxh5sfqa-as.a.run.app
+  https://logconsentauth-rcpavhoe7a-as.a.run.app
   
 Response: {"error": "Authentication failed"}
 ```
@@ -124,7 +124,7 @@ bq query --use_legacy_sql=false \
   --schedule='every day 00:00' \
   --location=asia-southeast3 \
   --display_name='Automated data retention cleanup' \
-  "DELETE FROM \`conicle-ai-dev.consent_analytics.consent_events\`
+  "DELETE FROM \`cookiemanager-488405.consent_analytics.consent_events\`
    WHERE DATE(event_timestamp) < DATE_SUB(CURRENT_DATE(), INTERVAL 730 DAY)"
 ```
 
@@ -254,7 +254,7 @@ node admin-generate-api-key.js \
 
 **Dashboard Access:**
 ```sql
-SELECT * FROM `conicle-ai-dev.consent_analytics.cost_dashboard`;
+SELECT * FROM `cookiemanager-488405.consent_analytics.cost_dashboard`;
 ```
 
 **Metrics Provided:**
@@ -273,8 +273,8 @@ SELECT
   COUNT(e.event_id) as events_this_month,
   k.monthly_quota,
   ROUND(COUNT(e.event_id) * 100.0 / k.monthly_quota, 2) as percent_used
-FROM `conicle-ai-dev.consent_analytics.api_keys` k
-LEFT JOIN `conicle-ai-dev.consent_analytics.consent_events` e 
+FROM `cookiemanager-488405.consent_analytics.api_keys` k
+LEFT JOIN `cookiemanager-488405.consent_analytics.consent_events` e 
   ON k.api_key = e.api_key
   AND DATE(e.event_timestamp) >= DATE_TRUNC(CURRENT_DATE(), MONTH)
 WHERE k.is_active = TRUE
@@ -318,7 +318,7 @@ bq query --use_legacy_sql=false \
   --schedule='every day 00:00' \
   --location=asia-southeast3 \
   --display_name='Data retention cleanup' \
-  "DELETE FROM \`conicle-ai-dev.consent_analytics.consent_events\`
+  "DELETE FROM \`cookiemanager-488405.consent_analytics.consent_events\`
    WHERE DATE(event_timestamp) < DATE_SUB(CURRENT_DATE(), INTERVAL 730 DAY)"
 ```
 
@@ -346,7 +346,7 @@ node admin-generate-api-key.js \
 **Standard Integration:**
 ```javascript
 const BIGQUERY_API_KEY = 'cm_xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx';
-const BIGQUERY_LOG_URL = 'https://logconsentauth-pxoxh5sfqa-as.a.run.app';
+const BIGQUERY_LOG_URL = 'https://logconsentauth-rcpavhoe7a-as.a.run.app';
 
 fetch(BIGQUERY_LOG_URL, {
   method: 'POST',

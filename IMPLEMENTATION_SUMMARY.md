@@ -110,7 +110,7 @@ Management Interfaces:
 
 **CDN URL:**
 ```
-https://storage.googleapis.com/consent-manager-cdn-tanapatj-jkt/consent-manager.js
+https://storage.googleapis.com/consentmanager/consent-manager.js
 ```
 
 ---
@@ -119,7 +119,7 @@ https://storage.googleapis.com/consent-manager-cdn-tanapatj-jkt/consent-manager.
 
 **Component:** Cloud Function (Node.js 20)  
 **Region:** asia-southeast1 (Singapore)  
-**Endpoint:** `https://logconsentauth-pxoxh5sfqa-as.a.run.app`
+**Endpoint:** `https://logconsentauth-rcpavhoe7a-as.a.run.app`
 
 **Security Features:**
 
@@ -146,7 +146,7 @@ https://storage.googleapis.com/consent-manager-cdn-tanapatj-jkt/consent-manager.
 ### 3. Data Warehouse
 
 **Platform:** Google BigQuery  
-**Project:** conicle-ai-dev  
+**Project:** cookiemanager-488405  
 **Dataset:** consent_analytics  
 **Location:** asia-southeast3 (Bangkok)
 
@@ -377,8 +377,8 @@ https://storage.googleapis.com/consent-manager-cdn-tanapatj-jkt/consent-manager.
 
 | Resource | Name/ID | Region | Purpose |
 |----------|---------|--------|---------|
-| **Project** | conicle-ai-dev | - | GCP project container |
-| **Cloud Storage Bucket** | consent-manager-cdn-tanapatj-jkt | asia-southeast3 | CDN for JS/CSS files |
+| **Project** | cookiemanager-488405 | - | GCP project container |
+| **Cloud Storage Bucket** | consentmanager | asia-southeast3 | CDN for JS/CSS files |
 | **Cloud Function** | logConsentAuth | asia-southeast1 | Authentication & logging endpoint |
 | **BigQuery Dataset** | consent_analytics | asia-southeast3 | Data warehouse |
 | **BigQuery Table** | consent_events | asia-southeast3 | Event log |
@@ -389,11 +389,11 @@ https://storage.googleapis.com/consent-manager-cdn-tanapatj-jkt/consent-manager.
 
 | Endpoint | URL | Purpose |
 |----------|-----|---------|
-| **CDN (Library)** | https://storage.googleapis.com/consent-manager-cdn-tanapatj-jkt/consent-manager.js | JavaScript library |
-| **API (Logging)** | https://logconsentauth-pxoxh5sfqa-as.a.run.app | Event logging endpoint |
-| **Demo** | https://storage.googleapis.com/consent-manager-cdn-tanapatj-jkt/index.html | Live demo |
-| **Admin Portal** | https://storage.googleapis.com/consent-manager-cdn-tanapatj-jkt/admin.html | API key management |
-| **Registration** | https://storage.googleapis.com/consent-manager-cdn-tanapatj-jkt/register.html | Customer registration |
+| **CDN (Library)** | https://storage.googleapis.com/consentmanager/consent-manager.js | JavaScript library |
+| **API (Logging)** | https://logconsentauth-rcpavhoe7a-as.a.run.app | Event logging endpoint |
+| **Demo** | https://storage.googleapis.com/consentmanager/index.html | Live demo |
+| **Admin Portal** | https://storage.googleapis.com/consentmanager/admin.html | API key management |
+| **Registration** | https://storage.googleapis.com/consentmanager/register.html | Customer registration |
 
 ---
 
@@ -484,7 +484,7 @@ https://storage.googleapis.com/consent-manager-cdn-tanapatj-jkt/consent-manager.
 ### Basic Integration
 
 ```html
-<script src="https://storage.googleapis.com/consent-manager-cdn-tanapatj-jkt/consent-manager.js"></script>
+<script src="https://storage.googleapis.com/consentmanager/consent-manager.js"></script>
 <script>
 window.ConsentManager = ConsentManager.run({
   categories: {
@@ -500,7 +500,7 @@ window.ConsentManager = ConsentManager.run({
 
 ```javascript
 const BIGQUERY_API_KEY = 'cm_your-api-key';
-const BIGQUERY_LOG_URL = 'https://logconsentauth-pxoxh5sfqa-as.a.run.app';
+const BIGQUERY_LOG_URL = 'https://logconsentauth-rcpavhoe7a-as.a.run.app';
 
 async function logToBigQuery(eventType, eventData) {
   await fetch(BIGQUERY_LOG_URL, {

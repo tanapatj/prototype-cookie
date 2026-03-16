@@ -22,7 +22,7 @@ Website → ConsentManager → Cloud Function → BigQuery
 
 ## 📋 Prerequisites
 
-- GCP Project: `conicle-ai-dev` ✅
+- GCP Project: `cookiemanager-488405` ✅
 - `gcloud` CLI authenticated ✅
 - Billing enabled on your GCP project
 
@@ -34,7 +34,7 @@ Website → ConsentManager → Cloud Function → BigQuery
 
 ```bash
 # Create dataset
-gcloud config set project conicle-ai-dev
+gcloud config set project cookiemanager-488405
 
 bq mk --dataset \
   --location=asia-southeast3 \
@@ -47,7 +47,7 @@ bq mk --dataset \
 ```bash
 # Create table with schema
 bq mk --table \
-  conicle-ai-dev:consent_analytics.consent_events \
+  cookiemanager-488405:consent_analytics.consent_events \
   bigquery/schema.sql
 ```
 
@@ -77,7 +77,7 @@ gcloud functions deploy logConsent \
   --max-instances=10 \
   --memory=256MB \
   --timeout=60s \
-  --project=conicle-ai-dev
+  --project=cookiemanager-488405
 ```
 
 **Important:** Replace `your-secret-salt-here` with a random string for IP hashing.
@@ -87,7 +87,7 @@ gcloud functions deploy logConsent \
 ```bash
 gcloud functions describe logConsent \
   --region=asia-southeast3 \
-  --project=conicle-ai-dev \
+  --project=cookiemanager-488405 \
   --format="value(serviceConfig.uri)"
 ```
 
@@ -107,7 +107,7 @@ https://logconsent-abc123-uc.a.run.app
 Add this to your ConsentManager initialization:
 
 ```html
-<script src="https://storage.googleapis.com/consent-manager-cdn-tanapatj-jkt/v1.0.0/consent-manager.umd.js"></script>
+<script src="https://storage.googleapis.com/consentmanager/v1.0.0/consent-manager.umd.js"></script>
 
 <script>
 // Your Cloud Function URL
@@ -242,7 +242,7 @@ SELECT
     COUNT(*) as total_events,
     event_type,
     accept_type
-FROM `conicle-ai-dev.consent_analytics.consent_events`
+FROM `cookiemanager-488405.consent_analytics.consent_events`
 WHERE DATE(event_timestamp) = CURRENT_DATE()
 GROUP BY event_type, accept_type
 ORDER BY total_events DESC;
@@ -256,7 +256,7 @@ WITH consent_events AS (
     event_timestamp,
     accept_type,
     accepted_categories
-  FROM `conicle-ai-dev.consent_analytics.consent_events`
+  FROM `cookiemanager-488405.consent_analytics.consent_events`
   WHERE event_type = 'consent'
     AND DATE(event_timestamp) >= DATE_SUB(CURRENT_DATE(), INTERVAL 7 DAY)
 )
@@ -277,7 +277,7 @@ SELECT
   COUNT(*) as users,
   COUNTIF('analytics' IN UNNEST(accepted_categories)) as accepted_analytics,
   ROUND(COUNTIF('analytics' IN UNNEST(accepted_categories)) * 100.0 / COUNT(*), 2) as acceptance_rate
-FROM `conicle-ai-dev.consent_analytics.consent_events`
+FROM `cookiemanager-488405.consent_analytics.consent_events`
 WHERE event_type = 'consent'
   AND country_code IS NOT NULL
   AND DATE(event_timestamp) >= DATE_SUB(CURRENT_DATE(), INTERVAL 30 DAY)
@@ -296,7 +296,7 @@ SELECT
   COUNT(*) as users,
   COUNTIF(accept_type = 'all') as accepted_all,
   ROUND(COUNTIF(accept_type = 'all') * 100.0 / COUNT(*), 2) as acceptance_rate
-FROM `conicle-ai-dev.consent_analytics.consent_events`
+FROM `cookiemanager-488405.consent_analytics.consent_events`
 WHERE event_type = 'consent'
   AND DATE(event_timestamp) >= DATE_SUB(CURRENT_DATE(), INTERVAL 7 DAY)
 GROUP BY device_type, browser_name
@@ -345,7 +345,7 @@ ORDER BY users DESC;
 2. **Data Retention:** Set up automatic deletion after 2 years:
    ```sql
    -- Run monthly
-   DELETE FROM `conicle-ai-dev.consent_analytics.consent_events`
+   DELETE FROM `cookiemanager-488405.consent_analytics.consent_events`
    WHERE DATE(event_timestamp) < DATE_SUB(CURRENT_DATE(), INTERVAL 730 DAY);
    ```
 3. **User Rights:** Provide a way for users to request deletion of their data
@@ -361,7 +361,7 @@ ORDER BY users DESC;
 gcloud functions logs read logConsent \
   --region=asia-southeast3 \
   --limit=50 \
-  --project=conicle-ai-dev
+  --project=cookiemanager-488405
 ```
 
 ### Test function manually:
@@ -386,7 +386,7 @@ curl -X POST https://YOUR-FUNCTION-URL.a.run.app \
 ```bash
 # List recent rows
 bq query --use_legacy_sql=false \
-  'SELECT * FROM `conicle-ai-dev.consent_analytics.consent_events` ORDER BY event_timestamp DESC LIMIT 10'
+  'SELECT * FROM `cookiemanager-488405.consent_analytics.consent_events` ORDER BY event_timestamp DESC LIMIT 10'
 ```
 
 ---

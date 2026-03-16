@@ -14,7 +14,7 @@
 # Prerequisites:
 # - Run deploy-cloud-armor.sh first
 # - gcloud CLI authenticated
-# - Project: conicle-ai-dev
+# - Project: cookiemanager-488405
 #
 # Usage:
 #   bash deploy-load-balancer.sh
@@ -22,7 +22,7 @@
 
 set -e
 
-PROJECT_ID="conicle-ai-dev"
+PROJECT_ID="cookiemanager-488405"
 REGION="asia-southeast1"
 POLICY_NAME="consentmanager-ddos-protection"
 

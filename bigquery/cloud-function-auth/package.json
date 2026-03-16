@@ -11,6 +11,6 @@
     "uuid": "^9.0.1"
   },
   "scripts": {
-    "deploy": "gcloud functions deploy logConsentAuth --runtime nodejs20 --trigger-http --allow-unauthenticated --region asia-southeast1 --project conicle-ai-dev"
+    "deploy": "gcloud functions deploy logConsentAuth --runtime nodejs20 --trigger-http --allow-unauthenticated --region asia-southeast1 --project cookiemanager-488405"
   }
 }

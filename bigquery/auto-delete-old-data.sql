@@ -8,7 +8,7 @@
 -- 4. Use this query below
 
 -- Delete consent events older than 2 years (730 days)
-DELETE FROM `conicle-ai-dev.consent_analytics.consent_events`
+DELETE FROM `cookiemanager-488405.consent_analytics.consent_events`
 WHERE DATE(event_timestamp) < DATE_SUB(CURRENT_DATE(), INTERVAL 730 DAY);
 
 -- Log deletion summary
@@ -24,7 +24,7 @@ SELECT
 --   COUNT(*) as records_to_delete,
 --   MIN(event_timestamp) as oldest_record,
 --   MAX(event_timestamp) as newest_record_to_delete
--- FROM `conicle-ai-dev.consent_analytics.consent_events`
+-- FROM `cookiemanager-488405.consent_analytics.consent_events`
 -- WHERE DATE(event_timestamp) < DATE_SUB(CURRENT_DATE(), INTERVAL 730 DAY);
 
 -- SELECT * FROM deletion_summary;

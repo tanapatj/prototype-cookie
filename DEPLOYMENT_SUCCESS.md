@@ -11,7 +11,7 @@
 ### ✅ Successfully Deployed Functions
 
 **1. Authenticated Function (logConsentAuth)**
-- **URL:** https://logconsentauth-pxoxh5sfqa-as.a.run.app
+- **URL:** https://logconsentauth-rcpavhoe7a-as.a.run.app
 - **Region:** asia-southeast1 (Singapore)
 - **Configuration:**
   - Memory: 512MB
@@ -22,7 +22,7 @@
   - IP_SALT: Configured (secure)
 
 **2. Unauthenticated Function (logConsent)**
-- **URL:** https://logconsent-pxoxh5sfqa-et.a.run.app
+- **URL:** https://logconsent-rcpavhoe7a-et.a.run.app
 - **Region:** asia-southeast2 (Jakarta)
 - **Status:** Deployed with DDoS protection
 
@@ -80,7 +80,7 @@ HTTP Status: 429
 ```bash
 # Send 12 parallel requests (last 2 will be blocked)
 for i in {1..12}; do
-  curl -s -X POST "https://logconsentauth-pxoxh5sfqa-as.a.run.app" \
+  curl -s -X POST "https://logconsentauth-rcpavhoe7a-as.a.run.app" \
     -H "Content-Type: application/json" \
     -H "X-API-Key: your-api-key" \
     -d '{"event_type":"test","cookie":{"categories":["necessary"]}}' &
@@ -133,7 +133,7 @@ wait
 ```bash
 # Test 1: Send burst of requests to trigger rate limiting
 for i in {1..12}; do
-  curl -X POST "https://logconsentauth-pxoxh5sfqa-as.a.run.app" \
+  curl -X POST "https://logconsentauth-rcpavhoe7a-as.a.run.app" \
     -H "Content-Type: application/json" \
     -H "X-API-Key: demo-key-12345678-1234-1234-1234-123456789abc" \
     -d '{"event_type":"test","cookie":{"categories":["necessary"]}}' \
@@ -166,7 +166,7 @@ python3 test-ddos-protection.py all
 gcloud functions logs read logConsentAuth \
   --region=asia-southeast1 \
   --limit=50 \
-  --project=conicle-ai-dev | grep "BLOCKED"
+  --project=cookiemanager-488405 | grep "BLOCKED"
 ```
 
 ### View All DDoS Protection Logs
@@ -176,7 +176,7 @@ gcloud functions logs read logConsentAuth \
 gcloud functions logs read logConsentAuth \
   --region=asia-southeast1 \
   --limit=100 \
-  --project=conicle-ai-dev | grep -E "DDOS|RATE_LIMIT"
+  --project=cookiemanager-488405 | grep -E "DDOS|RATE_LIMIT"
 ```
 
 ### Set Up Alerts (Recommended)
@@ -241,7 +241,7 @@ Then redeploy:
 cd bigquery/cloud-function-auth
 gcloud functions deploy logConsentAuth \
   --region=asia-southeast1 \
-  --project=conicle-ai-dev
+  --project=cookiemanager-488405
 ```
 
 ### Adjust Request Size Limit

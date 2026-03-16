@@ -51,7 +51,7 @@ gcloud functions deploy logConsentAuth \
   --timeout=60s \
   --max-instances=100 \
   --set-env-vars="IP_SALT=$(openssl rand -hex 32)" \
-  --project=conicle-ai-dev
+  --project=cookiemanager-488405
 ```
 
 #### Step 2: Deploy Unauthenticated Function
@@ -69,7 +69,7 @@ gcloud functions deploy logConsent \
   --timeout=60s \
   --max-instances=100 \
   --set-env-vars="IP_SALT=$(openssl rand -hex 32)" \
-  --project=conicle-ai-dev
+  --project=cookiemanager-488405
 ```
 
 ---
@@ -100,7 +100,7 @@ Timeout Protection:  ✅ ACTIVE (long requests timeout at 5 seconds)
 ```bash
 # Send 15 requests quickly
 for i in {1..15}; do
-  curl -X POST https://logconsentauth-pxoxh5sfqa-as.a.run.app \
+  curl -X POST https://logconsentauth-rcpavhoe7a-as.a.run.app \
     -H "Content-Type: application/json" \
     -H "X-API-Key: demo-key-12345678-1234-1234-1234-123456789abc" \
     -d '{"event_type":"consent_given","cookie":{"categories":["necessary"]}}' \
@@ -126,7 +126,7 @@ large_payload = {
 }
 
 response = requests.post(
-    "https://logconsentauth-pxoxh5sfqa-as.a.run.app",
+    "https://logconsentauth-rcpavhoe7a-as.a.run.app",
     json=large_payload,
     headers={"X-API-Key": "demo-key-12345678-1234-1234-1234-123456789abc"}
 )
@@ -146,13 +146,13 @@ Expected: `Status: 413`
 **Solution**: Make sure you're authenticated:
 ```bash
 gcloud auth login
-gcloud config set project conicle-ai-dev
+gcloud config set project cookiemanager-488405
 ```
 
 ### Issue: Function not found
 **Solution**: Check if functions exist:
 ```bash
-gcloud functions list --project=conicle-ai-dev
+gcloud functions list --project=cookiemanager-488405
 ```
 
 ### Issue: Still getting 200 instead of 429
@@ -199,7 +199,7 @@ AND status = 'active';
 gcloud logging read "resource.type=cloud_function \
   AND jsonPayload.message=~'Rate limit exceeded'" \
   --limit=20 \
-  --project=conicle-ai-dev
+  --project=cookiemanager-488405
 ```
 
 ### View Blocked Large Payloads
@@ -207,14 +207,14 @@ gcloud logging read "resource.type=cloud_function \
 gcloud logging read "resource.type=cloud_function \
   AND jsonPayload.message=~'Request too large'" \
   --limit=20 \
-  --project=conicle-ai-dev
+  --project=cookiemanager-488405
 ```
 
 ### Monitor Function Health
 ```bash
 gcloud functions describe logConsentAuth \
   --region=asia-southeast1 \
-  --project=conicle-ai-dev
+  --project=cookiemanager-488405
 ```
 
 ---

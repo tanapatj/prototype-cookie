@@ -2,7 +2,7 @@
 
 **Test Date:** 2026-02-16  
 **Tester:** Automated Test Suite  
-**Endpoint:** https://logconsentauth-pxoxh5sfqa-as.a.run.app
+**Endpoint:** https://logconsentauth-rcpavhoe7a-as.a.run.app
 
 ---
 

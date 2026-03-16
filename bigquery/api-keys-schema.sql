@@ -1,9 +1,9 @@
 -- API Keys & Domain Whitelist Table
--- Project: conicle-ai-dev
+-- Project: cookiemanager-488405
 -- Dataset: consent_analytics
 -- Table: api_keys
 
-CREATE TABLE IF NOT EXISTS `conicle-ai-dev.consent_analytics.api_keys` (
+CREATE TABLE IF NOT EXISTS `cookiemanager-488405.consent_analytics.api_keys` (
   -- API Key Info
   api_key STRING NOT NULL,          -- UUID format API key
   api_key_hash STRING NOT NULL,     -- SHA-256 hash of API key (for validation)
@@ -37,7 +37,7 @@ OPTIONS(
 );
 
 -- Insert example API key (for testing)
-INSERT INTO `conicle-ai-dev.consent_analytics.api_keys` 
+INSERT INTO `cookiemanager-488405.consent_analytics.api_keys` 
   (api_key, api_key_hash, client_name, allowed_domains, is_active, created_at, current_month_usage, created_by, notes)
 VALUES 
   (
@@ -53,4 +53,4 @@ VALUES
   );
 
 -- Query to check API keys
--- SELECT * FROM `conicle-ai-dev.consent_analytics.api_keys` WHERE is_active = TRUE;
+-- SELECT * FROM `cookiemanager-488405.consent_analytics.api_keys` WHERE is_active = TRUE;

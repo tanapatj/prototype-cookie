@@ -107,6 +107,7 @@ exports.adminKeyManager = async (req, res) => {
   // CORS – only allow the GCS-hosted portal and localhost for dev
   const allowedOrigins = [
     'https://storage.googleapis.com',
+    'https://storage.googleapis.com/consentmanager',
     'http://localhost:8080',
     'http://localhost:3000',
   ];

@@ -34,8 +34,8 @@
 
 ```html
 <!-- ConsentManager CSS & JS -->
-<link rel="stylesheet" href="https://storage.googleapis.com/consent-manager-cdn-tanapatj-jkt/v1.0.0/consent-manager.css">
-<script src="https://storage.googleapis.com/consent-manager-cdn-tanapatj-jkt/v1.0.0/consent-manager.umd.js"></script>
+<link rel="stylesheet" href="https://storage.googleapis.com/consentmanager/v1.0.0/consent-manager.css">
+<script src="https://storage.googleapis.com/consentmanager/v1.0.0/consent-manager.umd.js"></script>
 
 <!-- Initialize ConsentManager -->
 <script>
@@ -138,7 +138,7 @@ ConsentManager.run({
     <title>My Website</title>
     
     <!-- ConsentManager CSS -->
-    <link rel="stylesheet" href="https://storage.googleapis.com/consent-manager-cdn-tanapatj-jkt/v1.0.0/consent-manager.css">
+    <link rel="stylesheet" href="https://storage.googleapis.com/consentmanager/v1.0.0/consent-manager.css">
 </head>
 <body>
     
@@ -146,7 +146,7 @@ ConsentManager.run({
     <p>Your content here...</p>
     
     <!-- ConsentManager JS -->
-    <script src="https://storage.googleapis.com/consent-manager-cdn-tanapatj-jkt/v1.0.0/consent-manager.umd.js"></script>
+    <script src="https://storage.googleapis.com/consentmanager/v1.0.0/consent-manager.umd.js"></script>
     
     <!-- Initialize ConsentManager -->
     <script>
@@ -447,14 +447,14 @@ if (ConsentManager.acceptedCategory('analytics')) {
     <title>Conicle AI</title>
     
     <!-- ConsentManager -->
-    <link rel="stylesheet" href="https://storage.googleapis.com/consent-manager-cdn-tanapatj-jkt/v1.0.0/consent-manager.css">
+    <link rel="stylesheet" href="https://storage.googleapis.com/consentmanager/v1.0.0/consent-manager.css">
 </head>
 <body>
     
     <!-- Your website content -->
     
     <!-- ConsentManager -->
-    <script src="https://storage.googleapis.com/consent-manager-cdn-tanapatj-jkt/v1.0.0/consent-manager.umd.js"></script>
+    <script src="https://storage.googleapis.com/consentmanager/v1.0.0/consent-manager.umd.js"></script>
     <script>
         ConsentManager.run({
             categories: {

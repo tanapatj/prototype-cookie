@@ -15,7 +15,7 @@
 
 set -e
 
-PROJECT_ID="conicle-ai-dev"
+PROJECT_ID="cookiemanager-488405"
 REGION_AUTH="asia-southeast1"
 REGION_UNAUTH="asia-southeast3"
 

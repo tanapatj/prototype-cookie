@@ -118,10 +118,10 @@ Add these three lines to your HTML:
 
 ```html
 <!-- 1. CSS in <head> -->
-<link rel="stylesheet" href="https://storage.googleapis.com/consent-manager-cdn-tanapatj-jkt/v1.0.0/consent-manager.css">
+<link rel="stylesheet" href="https://storage.googleapis.com/consentmanager/v1.0.0/consent-manager.css">
 
 <!-- 2. JS before </body> -->
-<script src="https://storage.googleapis.com/consent-manager-cdn-tanapatj-jkt/v1.0.0/consent-manager.umd.js"></script>
+<script src="https://storage.googleapis.com/consentmanager/v1.0.0/consent-manager.umd.js"></script>
 
 <!-- 3. Initialize -->
 <script>
@@ -202,8 +202,8 @@ Wrap your tracking scripts so they only run after consent:
 ### Via CDN (Recommended)
 
 ```html
-<link rel="stylesheet" href="https://storage.googleapis.com/consent-manager-cdn-tanapatj-jkt/v1.0.0/consent-manager.css">
-<script src="https://storage.googleapis.com/consent-manager-cdn-tanapatj-jkt/v1.0.0/consent-manager.umd.js"></script>
+<link rel="stylesheet" href="https://storage.googleapis.com/consentmanager/v1.0.0/consent-manager.css">
+<script src="https://storage.googleapis.com/consentmanager/v1.0.0/consent-manager.umd.js"></script>
 ```
 
 ### Via npm / pnpm
@@ -223,7 +223,7 @@ import 'consent-manager/dist/consent-manager.css';
 
 ```html
 <script type="module">
-import * as ConsentManager from 'https://storage.googleapis.com/consent-manager-cdn-tanapatj-jkt/v1.0.0/consent-manager.esm.js';
+import * as ConsentManager from 'https://storage.googleapis.com/consentmanager/v1.0.0/consent-manager.esm.js';
 </script>
 ```
 
@@ -561,9 +561,9 @@ The built library is hosted on GCP Cloud Storage in the Bangkok region:
 
 | File | URL |
 |---|---|
-| JS (UMD) | `https://storage.googleapis.com/consent-manager-cdn-tanapatj-jkt/v1.0.0/consent-manager.umd.js` |
-| JS (ESM) | `https://storage.googleapis.com/consent-manager-cdn-tanapatj-jkt/v1.0.0/consent-manager.esm.js` |
-| CSS | `https://storage.googleapis.com/consent-manager-cdn-tanapatj-jkt/v1.0.0/consent-manager.css` |
+| JS (UMD) | `https://storage.googleapis.com/consentmanager/v1.0.0/consent-manager.umd.js` |
+| JS (ESM) | `https://storage.googleapis.com/consentmanager/v1.0.0/consent-manager.esm.js` |
+| CSS | `https://storage.googleapis.com/consentmanager/v1.0.0/consent-manager.css` |
 
 ### Cloud Function
 
@@ -619,7 +619,7 @@ Dataset `consent_analytics` in GCP project, partitioned by date, clustered by ev
 
 ## Live Demo
 
-**Interactive Demo:** [Open Demo](https://storage.googleapis.com/consent-manager-cdn-tanapatj-jkt/index.html)
+**Interactive Demo:** [Open Demo](https://storage.googleapis.com/consentmanager/index.html)
 
 The demo includes:
 - Interactive consent banner with accept/reject controls

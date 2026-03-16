@@ -18,14 +18,14 @@
 <html>
 <head>
     <!-- 1. Load CSS -->
-    <link rel="stylesheet" href="https://storage.googleapis.com/consent-manager-cdn-tanapatj-jkt/v1.0.0/consent-manager.css">
+    <link rel="stylesheet" href="https://storage.googleapis.com/consentmanager/v1.0.0/consent-manager.css">
 </head>
 <body>
     
     <!-- Your website content -->
     
     <!-- 2. Load JavaScript -->
-    <script src="https://storage.googleapis.com/consent-manager-cdn-tanapatj-jkt/v1.0.0/consent-manager.umd.js"></script>
+    <script src="https://storage.googleapis.com/consentmanager/v1.0.0/consent-manager.umd.js"></script>
     
     <!-- 3. Initialize -->
     <script>
@@ -287,23 +287,23 @@ document.querySelector('#cookie-settings-btn').addEventListener('click', functio
 
 ```
 JavaScript (UMD):
-https://storage.googleapis.com/consent-manager-cdn-tanapatj-jkt/v1.0.0/consent-manager.umd.js
+https://storage.googleapis.com/consentmanager/v1.0.0/consent-manager.umd.js
 
 CSS:
-https://storage.googleapis.com/consent-manager-cdn-tanapatj-jkt/v1.0.0/consent-manager.css
+https://storage.googleapis.com/consentmanager/v1.0.0/consent-manager.css
 ```
 
 ### ES Modules (For Modern Build Tools)
 
 ```javascript
-import * as ConsentManager from 'https://storage.googleapis.com/consent-manager-cdn-tanapatj-jkt/v1.0.0/consent-manager.esm.js';
+import * as ConsentManager from 'https://storage.googleapis.com/consentmanager/v1.0.0/consent-manager.esm.js';
 ```
 
 ### Core Library (No GUI - API Only)
 
 If you want to build your own UI:
 ```
-https://storage.googleapis.com/consent-manager-cdn-tanapatj-jkt/v1.0.0/core/consent-manager-core.umd.js
+https://storage.googleapis.com/consentmanager/v1.0.0/core/consent-manager-core.umd.js
 ```
 
 ---
@@ -567,7 +567,7 @@ location.reload();           // Reload to see banner again
 | Resource | Location |
 |----------|----------|
 | **GitHub Repository** | https://github.com/tanapatj/prototype-cookie |
-| **GCP Bucket** | `consent-manager-cdn-tanapatj-jkt` |
+| **GCP Bucket** | `consentmanager` |
 | **Region** | Asia-Southeast3 (Bangkok 🇹🇭) |
 | **Documentation** | `/docs` folder in repo |
 | **Demo Examples** | `/demo` folder in repo |

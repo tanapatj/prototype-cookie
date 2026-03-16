@@ -129,7 +129,7 @@ if (!checkRateLimit(clientIP)) {
 ```bash
 # Create backend bucket for Cloud Storage
 gcloud compute backend-buckets create consent-manager-cdn \
-    --gcs-bucket-name=consent-manager-cdn-tanapatj-jkt \
+    --gcs-bucket-name=consentmanager \
     --enable-cdn
 
 # Attach Cloud Armor policy
@@ -377,7 +377,7 @@ updates:
 ```html
 <!-- Generate hash: openssl dgst -sha384 -binary consent-manager.umd.js | openssl base64 -A -->
 <script 
-  src="https://storage.googleapis.com/consent-manager-cdn-tanapatj-jkt/v1.0.0/consent-manager.umd.js"
+  src="https://storage.googleapis.com/consentmanager/v1.0.0/consent-manager.umd.js"
   integrity="sha384-HASH_HERE"
   crossorigin="anonymous">
 </script>
@@ -410,7 +410,7 @@ If you publish to npm, add:
   script-src 'self' https://storage.googleapis.com;
   style-src 'self' 'unsafe-inline';
   img-src 'self' data:;
-  connect-src 'self' https://logconsentauth-pxoxh5sfqa-as.a.run.app;
+  connect-src 'self' https://logconsentauth-rcpavhoe7a-as.a.run.app;
   frame-ancestors 'none';
   base-uri 'self';
   form-action 'self';
@@ -426,7 +426,7 @@ If you publish to npm, add:
 ```bash
 gsutil setmeta -h "x-goog-meta-x-frame-options:DENY" \
   -h "x-goog-meta-x-content-type-options:nosniff" \
-  gs://consent-manager-cdn-tanapatj-jkt/**/*.html
+  gs://consentmanager/**/*.html
 ```
 
 ### 2. Secrets Management (Priority: CRITICAL)

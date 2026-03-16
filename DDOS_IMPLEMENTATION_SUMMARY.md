@@ -159,7 +159,7 @@ No additional deployment needed.
 ### Step 2: Infrastructure-Level (Optional but Recommended)
 
 #### Prerequisites:
-- GCP project: `conicle-ai-dev`
+- GCP project: `cookiemanager-488405`
 - gcloud CLI authenticated
 - IAM roles: Compute Security Admin
 

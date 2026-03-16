@@ -25,7 +25,7 @@ import json
 from typing import Dict, List, Tuple
 
 # Configuration
-ENDPOINT = "https://logconsentauth-pxoxh5sfqa-as.a.run.app"
+ENDPOINT = "https://logconsentauth-rcpavhoe7a-as.a.run.app"
 API_KEY = "demo-key-12345678-1234-1234-1234-123456789abc"  # Replace with your actual key
 
 # Colors for terminal output

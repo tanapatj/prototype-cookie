@@ -6,7 +6,7 @@
 # 
 # Prerequisites:
 # - gcloud CLI installed and authenticated
-# - Project: conicle-ai-dev (or update PROJECT_ID below)
+# - Project: cookiemanager-488405 (or update PROJECT_ID below)
 # - Required IAM roles: Compute Security Admin
 #
 # Usage:
@@ -15,7 +15,7 @@
 
 set -e  # Exit on error
 
-PROJECT_ID="conicle-ai-dev"
+PROJECT_ID="cookiemanager-488405"
 POLICY_NAME="consentmanager-ddos-protection"
 
 echo "=========================================="

@@ -9,7 +9,7 @@ Your ConsentManager demo now logs consent events to BigQuery in real-time!
 ## 📊 Deployed Infrastructure
 
 ### 1. BigQuery Dataset
-- **Project:** `conicle-ai-dev`
+- **Project:** `cookiemanager-488405`
 - **Dataset:** `consent_analytics`
 - **Location:** `asia-southeast3` (Bangkok)
 - **Status:** ✅ Created
@@ -25,12 +25,12 @@ Your ConsentManager demo now logs consent events to BigQuery in real-time!
 - **Name:** `logConsent`
 - **Runtime:** Node.js 20
 - **Region:** `asia-southeast1` (Singapore)
-- **URL:** `https://logconsent-pxoxh5sfqa-as.a.run.app`
+- **URL:** `https://logconsent-rcpavhoe7a-as.a.run.app`
 - **Trigger:** HTTP (public)
 - **Status:** ✅ Deployed
 
 ### 4. Live Demo
-- **URL:** `https://storage.googleapis.com/consent-manager-cdn-tanapatj-jkt/index.html`
+- **URL:** `https://storage.googleapis.com/consentmanager/index.html`
 - **BigQuery Logging:** ✅ ACTIVE
 - **Status:** ✅ Updated
 
@@ -40,7 +40,7 @@ Your ConsentManager demo now logs consent events to BigQuery in real-time!
 
 ### 1. Open the Demo
 ```
-https://storage.googleapis.com/consent-manager-cdn-tanapatj-jkt/index.html
+https://storage.googleapis.com/consentmanager/index.html
 ```
 
 ### 2. Interact with Consent Banner
@@ -62,7 +62,7 @@ You'll see messages like:
 
 ```bash
 bq query --use_legacy_sql=false \
-  'SELECT COUNT(*) as total_events FROM `conicle-ai-dev.consent_analytics.consent_events` WHERE DATE(event_timestamp) = CURRENT_DATE()'
+  'SELECT COUNT(*) as total_events FROM `cookiemanager-488405.consent_analytics.consent_events` WHERE DATE(event_timestamp) = CURRENT_DATE()'
 ```
 
 ### View Recent Events
@@ -76,7 +76,7 @@ bq query --use_legacy_sql=false \
     accepted_categories,
     device_type,
     browser_name
-  FROM `conicle-ai-dev.consent_analytics.consent_events`
+  FROM `cookiemanager-488405.consent_analytics.consent_events`
   ORDER BY event_timestamp DESC
   LIMIT 10'
 ```
@@ -88,7 +88,7 @@ SELECT
   accept_type,
   COUNT(*) as total,
   ROUND(COUNT(*) * 100.0 / SUM(COUNT(*)) OVER(), 2) as percentage
-FROM `conicle-ai-dev.consent_analytics.consent_events`
+FROM `cookiemanager-488405.consent_analytics.consent_events`
 WHERE event_type = 'consent'
   AND DATE(event_timestamp) = CURRENT_DATE()
 GROUP BY accept_type;
@@ -101,7 +101,7 @@ GROUP BY accept_type;
 **View your data in the web console:**
 
 1. Go to: https://console.cloud.google.com/bigquery
-2. Select project: `conicle-ai-dev`
+2. Select project: `cookiemanager-488405`
 3. Expand: `consent_analytics` → `consent_events`
 4. Click "Query" to run SQL
 
@@ -177,12 +177,12 @@ bigquery/example-queries.sql
 gcloud functions logs read logConsent \
   --region=asia-southeast1 \
   --limit=20 \
-  --project=conicle-ai-dev
+  --project=cookiemanager-488405
 ```
 
 **Test the function manually:**
 ```bash
-curl -X POST https://logconsent-pxoxh5sfqa-as.a.run.app \
+curl -X POST https://logconsent-rcpavhoe7a-as.a.run.app \
   -H "Content-Type: application/json" \
   -d '{
     "event_type": "consent",
@@ -194,7 +194,7 @@ curl -X POST https://logconsent-pxoxh5sfqa-as.a.run.app \
 
 **Check BigQuery streaming:**
 ```bash
-bq ls -j conicle-ai-dev
+bq ls -j cookiemanager-488405
 ```
 
 ---
@@ -214,14 +214,14 @@ bq ls -j conicle-ai-dev
 ## 🎯 Next Steps
 
 ### 1. Test the Demo (Now!)
-Open: https://storage.googleapis.com/consent-manager-cdn-tanapatj-jkt/index.html
+Open: https://storage.googleapis.com/consentmanager/index.html
 
 Accept/reject cookies and watch the event log!
 
 ### 2. Check BigQuery (1 minute)
 ```bash
 bq query --use_legacy_sql=false \
-  'SELECT * FROM `conicle-ai-dev.consent_analytics.consent_events` ORDER BY event_timestamp DESC LIMIT 5'
+  'SELECT * FROM `cookiemanager-488405.consent_analytics.consent_events` ORDER BY event_timestamp DESC LIMIT 5'
 ```
 
 ### 3. Run Analytics (5 minutes)
@@ -230,7 +230,7 @@ Copy queries from `bigquery/example-queries.sql` and run them in BigQuery consol
 ### 4. Build Dashboard (Optional)
 - Go to Looker Studio: https://lookerstudio.google.com
 - Create new data source → BigQuery
-- Select: `conicle-ai-dev.consent_analytics.consent_events`
+- Select: `cookiemanager-488405.consent_analytics.consent_events`
 - Build charts!
 
 ---
@@ -241,7 +241,7 @@ Copy this code to your website:
 
 ```html
 <script>
-const CONSENT_LOG_URL = 'https://logconsent-pxoxh5sfqa-as.a.run.app';
+const CONSENT_LOG_URL = 'https://logconsent-rcpavhoe7a-as.a.run.app';
 
 // Generate session ID
 function getSessionId() {
@@ -288,7 +288,7 @@ ConsentManager.run({
 
 | Component | Status | URL/Details |
 |-----------|--------|-------------|
-| BigQuery Dataset | ✅ Live | `conicle-ai-dev.consent_analytics` |
+| BigQuery Dataset | ✅ Live | `cookiemanager-488405.consent_analytics` |
 | BigQuery Table | ✅ Live | `consent_events` (28 columns) |
 | Cloud Function | ✅ Deployed | `logConsent` (asia-southeast1) |
 | Demo Logging | ✅ Active | Events logging in real-time |
@@ -299,6 +299,6 @@ ConsentManager.run({
 
 **🎉 Everything is live and working!**
 
-**Test it now:** https://storage.googleapis.com/consent-manager-cdn-tanapatj-jkt/index.html
+**Test it now:** https://storage.googleapis.com/consentmanager/index.html
 
 **Questions?** Check `bigquery/deployment-guide.md` for detailed documentation.

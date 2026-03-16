@@ -460,7 +460,7 @@ gsutil setmeta -h "Content-Security-Policy: default-src 'self'; script-src 'self
   -h "X-Frame-Options: DENY" \
   -h "X-Content-Type-Options: nosniff" \
   -h "Referrer-Policy: strict-origin-when-cross-origin" \
-  gs://consent-manager-cdn-tanapatj-jkt/*.html
+  gs://consentmanager/*.html
 ```
 
 Or use Cloud Load Balancer with header injection.

@@ -1,9 +1,9 @@
 -- BigQuery Schema for Consent Logging
--- Project: conicle-ai-dev
+-- Project: cookiemanager-488405
 -- Dataset: consent_analytics
 -- Table: consent_events
 
-CREATE TABLE IF NOT EXISTS `conicle-ai-dev.consent_analytics.consent_events` (
+CREATE TABLE IF NOT EXISTS `cookiemanager-488405.consent_analytics.consent_events` (
   -- Event Identification
   event_id STRING NOT NULL,
   event_type STRING NOT NULL,  -- 'consent', 'change', 'first_consent'

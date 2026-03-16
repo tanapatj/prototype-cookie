@@ -168,6 +168,7 @@ async function getGeoLocation(ip) {
 // Allowed origins - restrict to known domains
 const ALLOWED_ORIGINS = [
   'https://storage.googleapis.com',
+  'https://storage.googleapis.com/consentmanager',
   /^https:\/\/.*\.conicle\.ai$/
 ];
 

@@ -66,7 +66,7 @@ SELECT
   accept_type,
   COUNT(*) as total,
   ROUND(COUNT(*) * 100.0 / SUM(COUNT(*)) OVER(), 2) as percentage
-FROM `conicle-ai-dev.consent_analytics.consent_events`
+FROM `cookiemanager-488405.consent_analytics.consent_events`
 WHERE DATE(event_timestamp) = CURRENT_DATE()
 GROUP BY accept_type;
 ```
@@ -161,7 +161,7 @@ curl -X POST https://YOUR-URL.a.run.app \
 bq show consent_analytics.consent_events
 
 # Check recent data
-bq query 'SELECT COUNT(*) FROM `conicle-ai-dev.consent_analytics.consent_events` WHERE DATE(event_timestamp) = CURRENT_DATE()'
+bq query 'SELECT COUNT(*) FROM `cookiemanager-488405.consent_analytics.consent_events` WHERE DATE(event_timestamp) = CURRENT_DATE()'
 ```
 
 ## 📚 More Info

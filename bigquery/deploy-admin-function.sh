@@ -5,7 +5,7 @@
 
 set -e
 
-PROJECT_ID="conicle-ai-dev"
+PROJECT_ID="cookiemanager-488405"
 REGION="asia-southeast1"
 FUNCTION_NAME="adminKeyManager"
 RUNTIME="nodejs20"

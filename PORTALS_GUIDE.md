@@ -3,7 +3,7 @@
 ## Portal Overview
 
 ### 1. Admin Portal
-**URL:** https://storage.googleapis.com/consent-manager-cdn-tanapatj-jkt/admin.html
+**URL:** https://storage.googleapis.com/consentmanager/admin.html
 
 **Purpose:** API key generation and management interface
 
@@ -17,7 +17,7 @@
 ---
 
 ### 2. Customer Registration Portal
-**URL:** https://storage.googleapis.com/consent-manager-cdn-tanapatj-jkt/register.html
+**URL:** https://storage.googleapis.com/consentmanager/register.html
 
 **Purpose:** Self-service registration interface for API access requests
 
@@ -36,7 +36,7 @@
 
 ```
 1. Customer visits: 
-   https://storage.googleapis.com/consent-manager-cdn-tanapatj-jkt/register.html
+   https://storage.googleapis.com/consentmanager/register.html
 
 2. Customer fills form:
    - Company name
@@ -57,7 +57,7 @@
 
 ```
 1. Admin opens:
-   https://storage.googleapis.com/consent-manager-cdn-tanapatj-jkt/admin.html
+   https://storage.googleapis.com/consentmanager/admin.html
 
 2. Admin clicks "Generate API Key" tab
 
@@ -92,7 +92,7 @@
 
 **Step 1:** Open Admin Portal
 ```
-https://storage.googleapis.com/consent-manager-cdn-tanapatj-jkt/admin.html
+https://storage.googleapis.com/consentmanager/admin.html
 ```
 
 **Step 2:** Fill in the form
@@ -111,7 +111,7 @@ https://storage.googleapis.com/consent-manager-cdn-tanapatj-jkt/admin.html
 **Step 4:** Copy the SQL command shown (it will look like this):
 ```sql
 bq query --use_legacy_sql=false "
-INSERT INTO \`conicle-ai-dev.consent_analytics.api_keys\`
+INSERT INTO \`cookiemanager-488405.consent_analytics.api_keys\`
   (api_key, api_key_hash, client_name, client_email, allowed_domains, 
    is_active, monthly_quota, current_month_usage, created_at, created_by, expires_at, notes)
 VALUES 
@@ -186,11 +186,11 @@ cm_abc12345-def6-7890-abcd-ef1234567890
 
 Add to your website:
 
-<script src="https://storage.googleapis.com/consent-manager-cdn-tanapatj-jkt/consent-manager.js"></script>
+<script src="https://storage.googleapis.com/consentmanager/consent-manager.js"></script>
 
 <script>
 const BIGQUERY_API_KEY = 'YOUR-API-KEY-HERE';
-const BIGQUERY_LOG_URL = 'https://logconsentauth-pxoxh5sfqa-as.a.run.app';
+const BIGQUERY_LOG_URL = 'https://logconsentauth-rcpavhoe7a-as.a.run.app';
 
 async function logToBigQuery(eventType, eventData) {
   await fetch(BIGQUERY_LOG_URL, {
@@ -238,9 +238,9 @@ ConsentManager Team
 
 | Portal | URL | Who Uses It |
 |--------|-----|-------------|
-| **Admin Portal** | https://storage.googleapis.com/consent-manager-cdn-tanapatj-jkt/admin.html | Your team (internal) |
-| **Customer Portal** | https://storage.googleapis.com/consent-manager-cdn-tanapatj-jkt/register.html | Customers (public) |
-| **Demo** | https://storage.googleapis.com/consent-manager-cdn-tanapatj-jkt/index.html | Demo/testing |
+| **Admin Portal** | https://storage.googleapis.com/consentmanager/admin.html | Your team (internal) |
+| **Customer Portal** | https://storage.googleapis.com/consentmanager/register.html | Customers (public) |
+| **Demo** | https://storage.googleapis.com/consentmanager/index.html | Demo/testing |
 
 ---
 
@@ -363,7 +363,7 @@ Customer → Registration Form → Backend API → Database → Auto-generate ke
 ## 🧪 Testing
 
 ### Test Admin Portal:
-1. Open: https://storage.googleapis.com/consent-manager-cdn-tanapatj-jkt/admin.html
+1. Open: https://storage.googleapis.com/consentmanager/admin.html
 2. Fill form with test data
 3. Click "Generate API Key"
 4. Copy SQL command
@@ -371,7 +371,7 @@ Customer → Registration Form → Backend API → Database → Auto-generate ke
 6. Verify key works with curl
 
 ### Test Customer Portal:
-1. Open: https://storage.googleapis.com/consent-manager-cdn-tanapatj-jkt/register.html
+1. Open: https://storage.googleapis.com/consentmanager/register.html
 2. Fill registration form
 3. Submit
 4. Check browser console for logged data
@@ -403,9 +403,9 @@ Add more tabs to admin portal:
 
 | Resource | Link |
 |----------|------|
-| **Customer Registration** | https://storage.googleapis.com/consent-manager-cdn-tanapatj-jkt/register.html |
-| **Admin Portal** | https://storage.googleapis.com/consent-manager-cdn-tanapatj-jkt/admin.html |
-| **BigQuery Console** | https://console.cloud.google.com/bigquery?project=conicle-ai-dev |
+| **Customer Registration** | https://storage.googleapis.com/consentmanager/register.html |
+| **Admin Portal** | https://storage.googleapis.com/consentmanager/admin.html |
+| **BigQuery Console** | https://console.cloud.google.com/bigquery?project=cookiemanager-488405 |
 | **Documentation** | https://github.com/tanapatj/prototype-cookie |
 
 ---

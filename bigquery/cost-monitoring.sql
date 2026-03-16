@@ -1,5 +1,5 @@
 -- Cost Monitoring Dashboard Queries
--- Project: conicle-ai-dev
+-- Project: cookiemanager-488405
 -- Dataset: consent_analytics
 
 -- ==========================================
@@ -15,7 +15,7 @@ SELECT
   MIN(event_timestamp) as oldest_record,
   MAX(event_timestamp) as newest_record,
   DATE_DIFF(CURRENT_DATE(), DATE(MIN(event_timestamp)), DAY) as retention_days
-FROM `conicle-ai-dev.consent_analytics.consent_events` t;
+FROM `cookiemanager-488405.consent_analytics.consent_events` t;
 
 -- ==========================================
 -- 2. MONTHLY GROWTH TREND
@@ -26,7 +26,7 @@ SELECT
   COUNT(*) as new_records,
   ROUND(COUNT(*) / 1024 / 1024 * 1, 2) as approx_size_mb,  -- Rough estimate
   ROUND(COUNT(*) / 1024 / 1024 * 1 / 1024 * 0.02, 4) as monthly_storage_cost_usd
-FROM `conicle-ai-dev.consent_analytics.consent_events`
+FROM `cookiemanager-488405.consent_analytics.consent_events`
 GROUP BY month
 ORDER BY month DESC
 LIMIT 12;
@@ -41,7 +41,7 @@ SELECT
   COUNT(DISTINCT session_id) as unique_sessions,
   COUNT(DISTINCT ip_address) as unique_ips,
   ROUND(COUNT(*) / 1000000.0, 2) as events_millions
-FROM `conicle-ai-dev.consent_analytics.consent_events`
+FROM `cookiemanager-488405.consent_analytics.consent_events`
 WHERE DATE(event_timestamp) >= DATE_SUB(CURRENT_DATE(), INTERVAL 30 DAY)
 GROUP BY date
 ORDER BY date DESC;
@@ -55,7 +55,7 @@ WITH daily_stats AS (
     DATE(event_timestamp) as date,
     COUNT(*) as daily_events,
     ROUND(SUM(LENGTH(TO_JSON_STRING(t))) / 1024 / 1024, 2) as daily_mb
-  FROM `conicle-ai-dev.consent_analytics.consent_events` t
+  FROM `cookiemanager-488405.consent_analytics.consent_events` t
   WHERE DATE(event_timestamp) >= DATE_SUB(CURRENT_DATE(), INTERVAL 7 DAY)
   GROUP BY date
 ),
@@ -96,8 +96,8 @@ SELECT
     THEN ROUND(COUNT(e.event_id) * 100.0 / k.monthly_quota, 2)
     ELSE NULL
   END as quota_usage_percent
-FROM `conicle-ai-dev.consent_analytics.api_keys` k
-LEFT JOIN `conicle-ai-dev.consent_analytics.consent_events` e 
+FROM `cookiemanager-488405.consent_analytics.api_keys` k
+LEFT JOIN `cookiemanager-488405.consent_analytics.consent_events` e 
   ON k.api_key = e.api_key
   AND DATE(e.event_timestamp) >= DATE_TRUNC(CURRENT_DATE(), MONTH)
 WHERE k.is_active = TRUE
@@ -120,7 +120,7 @@ SELECT
   COUNT(*) as records,
   ROUND(COUNT(*) * 100.0 / SUM(COUNT(*)) OVER(), 2) as percent_of_total,
   ROUND(COUNT(*) * 1.0 / 1024 / 1024, 2) as approx_mb
-FROM `conicle-ai-dev.consent_analytics.consent_events`
+FROM `cookiemanager-488405.consent_analytics.consent_events`
 GROUP BY data_age
 ORDER BY 
   CASE 
@@ -146,28 +146,28 @@ SELECT
     WHEN COUNT(*) > 0 THEN '⚠️ Run auto-delete-old-data.sql to free storage'
     ELSE '✅ No old data to delete'
   END as action_needed
-FROM `conicle-ai-dev.consent_analytics.consent_events`
+FROM `cookiemanager-488405.consent_analytics.consent_events`
 WHERE DATE(event_timestamp) < DATE_SUB(CURRENT_DATE(), INTERVAL 730 DAY);
 
 -- ==========================================
 -- 8. REAL-TIME COST DASHBOARD VIEW
 -- ==========================================
 
-CREATE OR REPLACE VIEW `conicle-ai-dev.consent_analytics.cost_dashboard` AS
+CREATE OR REPLACE VIEW `cookiemanager-488405.consent_analytics.cost_dashboard` AS
 WITH current_stats AS (
   SELECT 
     COUNT(*) as total_records,
     COUNT(DISTINCT DATE(event_timestamp)) as days_of_data,
     MIN(event_timestamp) as first_event,
     MAX(event_timestamp) as last_event
-  FROM `conicle-ai-dev.consent_analytics.consent_events`
+  FROM `cookiemanager-488405.consent_analytics.consent_events`
 ),
 monthly_projection AS (
   SELECT 
     AVG(daily_count) * 30 as projected_monthly_events
   FROM (
     SELECT COUNT(*) as daily_count
-    FROM `conicle-ai-dev.consent_analytics.consent_events`
+    FROM `cookiemanager-488405.consent_analytics.consent_events`
     WHERE DATE(event_timestamp) >= DATE_SUB(CURRENT_DATE(), INTERVAL 7 DAY)
     GROUP BY DATE(event_timestamp)
   )
@@ -191,4 +191,4 @@ SELECT
 FROM current_stats c, monthly_projection m;
 
 -- Query the dashboard
--- SELECT * FROM `conicle-ai-dev.consent_analytics.cost_dashboard`;
+-- SELECT * FROM `cookiemanager-488405.consent_analytics.cost_dashboard`;

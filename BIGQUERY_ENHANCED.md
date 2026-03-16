@@ -52,7 +52,7 @@ gclid STRING               -- Google Ads Click ID
 fbclid STRING              -- Facebook Ads Click ID
 ```
 
-**Schema upgraded:** ✅ Applied to `conicle-ai-dev.consent_analytics.consent_events`
+**Schema upgraded:** ✅ Applied to `cookiemanager-488405.consent_analytics.consent_events`
 
 ---
 
@@ -105,7 +105,7 @@ SELECT
   COUNT(*) as visitors,
   COUNTIF(accept_type = 'all') as accepted_all,
   ROUND(COUNTIF(accept_type = 'all') * 100.0 / COUNT(*), 2) as accept_rate
-FROM `conicle-ai-dev.consent_analytics.consent_events`
+FROM `cookiemanager-488405.consent_analytics.consent_events`
 WHERE utm_campaign IS NOT NULL
 GROUP BY utm_campaign, utm_source
 ORDER BY accept_rate DESC;
@@ -210,7 +210,7 @@ bq query --use_legacy_sql=false \
     utm_source,
     utm_campaign,
     gclid
-  FROM `conicle-ai-dev.consent_analytics.consent_events`
+  FROM `cookiemanager-488405.consent_analytics.consent_events`
   WHERE DATE(event_timestamp) = CURRENT_DATE()
   ORDER BY event_timestamp DESC
   LIMIT 5'
@@ -288,12 +288,12 @@ Still **FREE!** ✅ (under BigQuery free tier)
 
 **Test it now:**
 ```
-https://storage.googleapis.com/consent-manager-cdn-tanapatj-jkt/index.html
+https://storage.googleapis.com/consentmanager/index.html
 ```
 
 Try adding UTM parameters:
 ```
-https://storage.googleapis.com/consent-manager-cdn-tanapatj-jkt/index.html?utm_source=test&utm_campaign=demo
+https://storage.googleapis.com/consentmanager/index.html?utm_source=test&utm_campaign=demo
 ```
 
 Then check BigQuery - you'll see the UTM data! 🎉
